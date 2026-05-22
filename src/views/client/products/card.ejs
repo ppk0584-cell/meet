@@ -1,0 +1,191 @@
+<div class="product-card" data-category="<%= product.category %>" data-theme="<%= product.theme_category || '' %>" data-family="<%= product.family_category || '' %>" data-cooking="<%= product.cooking_category || '' %>">
+    <div class="card-image">
+        <img src="<%= product.image_url || '/images/fresh-meat-logo.png' %>" alt="<%= product.name %>">
+        <% if (product.usage_category === 'boss_pick') { %>
+            <% const bossType = product.boss_pick_type || 'recommend'; %>
+            <% const bossLabel = bossType === 'sale' ? '특가상품' : '추천상품'; %>
+            <div class="tag-ribbon <%= bossType === 'sale' ? 'sale' : 'recommend' %>"><%= bossLabel %></div>
+        <% } else if (product.family_category) { %>
+            <div class="tag-ribbon family"><%= product.family_category === 'happy_table' ? '가족행복' : product.family_category === 'kids_safe' ? '아이안심' : product.family_category === 'parents_care' ? '부모님' : product.family_category === 'wellness_diet' ? '웰빙' : '혼합용' %></div>
+        <% } else if (product.cooking_category) { %>
+            <div class="tag-ribbon family"><%= product.cooking_category === 'grill' ? '구이용' : product.cooking_category === 'soup_stew' ? '국·찌개용' : product.cooking_category === 'stir_fry_bulgogi' ? '볶음·불고기용' : product.cooking_category === 'braise' ? '찜·조림용' : '수육·보쌈·장조림용' %></div>
+        <% } %>
+    </div>
+    <div class="card-body">
+        <span class="product-kicker"><%= product.category === 'beef' ? 'BEEF' : product.category === 'pork' ? 'PORK' : product.category === 'chicken' ? 'CHICKEN' : 'SET' %></span>
+        <h3 class="product-name"><%= product.name %></h3>
+        <p class="product-desc"><%= product.description %></p>
+        <p class="product-meta">이력번호: <%= product.trace_number || '매장 확인' %></p>
+        <div class="price-info">
+            <span class="price"><%= product.price.toLocaleString() %>원</span>
+            <span class="unit">/ 100g</span>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-sm btn-light">상세</button>
+            <a class="btn btn-sm btn-recipe" href="/product/recipe/<%= product.id %>">
+                레시피
+            </a>
+            <button class="btn btn-sm btn-primary cart-button" type="button">
+                <span class="cart-label">담기</span> <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.product-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 12px 34px rgba(66, 42, 18, 0.08);
+}
+.card-image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--soft);
+}
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+.product-card:hover .card-image img { transform: scale(1.04); }
+.tag-ribbon {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--primary);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+.tag-ribbon.recommend {
+    background: var(--green);
+}
+.tag-ribbon.sale {
+    background: var(--primary);
+}
+.tag-ribbon.family {
+    background: var(--green);
+}
+.card-body {
+    padding: 18px;
+}
+.product-kicker {
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+.product-name {
+    min-height: 2.7em;
+    margin: 7px 0;
+    color: var(--ink);
+    font-size: 1.12rem;
+    line-height: 1.35;
+}
+.product-desc {
+    min-height: 3.2em;
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-size: 0.93rem;
+    line-height: 1.55;
+}
+.product-meta {
+    margin: 0 0 12px;
+    color: var(--green);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+.price-info {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 14px;
+}
+.price-info .price {
+    color: var(--primary);
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+.price-info .unit {
+    color: var(--muted);
+    font-size: 0.86rem;
+}
+.card-footer {
+    display: grid;
+    grid-template-columns: 0.75fr 1fr 1fr;
+    gap: 8px;
+}
+.btn-sm {
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+.cart-button {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.btn-recipe {
+    background: var(--green);
+    color: #fff;
+    justify-content: center;
+    text-align: center;
+}
+.btn-recipe:hover,
+.btn-recipe:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(33, 79, 53, 0.18);
+}
+.cart-button::after {
+    content: "";
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.36);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+}
+.cart-button:hover,
+.cart-button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(143, 23, 29, 0.22);
+}
+.cart-button.is-added {
+    background: var(--green);
+    color: #fff;
+    transform: scale(1.04);
+    box-shadow: 0 14px 30px rgba(33, 79, 53, 0.22);
+}
+.cart-button.is-added::after {
+    transform: scale(8);
+    opacity: 1;
+}
+.cart-button.is-added i {
+    animation: cartPop 0.34s ease;
+}
+@keyframes cartPop {
+    0% { transform: scale(0.6) rotate(-20deg); }
+    70% { transform: scale(1.25) rotate(8deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+@media (max-width: 480px) {
+    .card-body { padding: 16px; }
+    .product-name { min-height: auto; }
+    .card-footer {
+        grid-template-columns: 1fr 1fr;
+    }
+    .card-footer .btn-light {
+        grid-column: 1 / -1;
+    }
+}
+</style>

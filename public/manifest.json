@@ -1,0 +1,21 @@
+{
+  "name": "프레시미트",
+  "short_name": "프레시미트",
+  "description": "맛과 신선함의 정석, 프레시미트",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffaf2",
+  "theme_color": "#8f171d",
+  "icons": [
+    {
+      "src": "/images/fresh-meat-logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/fresh-meat-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

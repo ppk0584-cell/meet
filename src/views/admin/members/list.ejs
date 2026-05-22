@@ -1,0 +1,84 @@
+<div class="section-card">
+    <div class="flex-between mb-20">
+        <h2>멤버십 관리 (고객 현황)</h2>
+        <div class="search-box">
+            <input type="text" placeholder="아이디 또는 이름 검색" class="admin-input">
+        </div>
+    </div>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>회원번호</th>
+                <th>아이디/이름</th>
+                <th>등급</th>
+                <th>보유 포인트</th>
+                <th>텔레그램 연동</th>
+                <th>가입일</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (members && members.length > 0) { %>
+                <% members.forEach(member => { %>
+                    <tr>
+                        <td><%= member.id %></td>
+                        <td>
+                            <strong><%= member.username %></strong><br>
+                            <small><%= member.name %></small>
+                        </td>
+                        <td>
+                            <span class="tier-badge tier-<%= member.tier %>">
+                                <%= member.tier %>
+                            </span>
+                        </td>
+                        <td><%= member.points.toLocaleString() %> P</td>
+                        <td>
+                            <% if (member.telegram_id) { %>
+                                <span class="status-badge stock"><i class="fab fa-telegram"></i> 연동됨</span>
+                                <% if (!member.telegram_benefit_applied) { %>
+                                    <form action="/admin/members/benefit/<%= member.id %>" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn-link">혜택적용</button>
+                                    </form>
+                                <% } %>
+                            <% } else { %>
+                                <span class="status-badge out">미연동</span>
+                            <% } %>
+                        </td>
+                        <td><%= new Date(member.created_at).toLocaleDateString() %></td>
+                        <td>
+                            <a href="/admin/members/edit/<%= member.id %>" class="btn-icon"><i class="fas fa-user-edit"></i></a>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7" class="text-center">가입된 회원이 없습니다.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<style>
+.tier-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.tier-입석 { background-color: #f1f3f5; color: #495057; }
+.tier-안심 { background-color: #e7f5ff; color: #1971c2; }
+.tier-등심 { background-color: #fff4e6; color: #d9480f; }
+.tier-채끝 { background-color: #f8f0fc; color: #ae3ec9; }
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0;
+    margin-left: 5px;
+}
+</style>

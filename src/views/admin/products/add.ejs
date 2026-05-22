@@ -1,0 +1,131 @@
+<div class="section-card">
+    <h2>신규 상품 등록</h2>
+    <form action="/admin/products/add" method="POST" class="admin-form">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="name">상품명</label>
+                <input type="text" id="name" name="name" required placeholder="예: 한우 채끝">
+            </div>
+            <div class="form-group">
+                <label for="category">카테고리</label>
+                <select id="category" name="category">
+                    <option value="소고기">소고기</option>
+                    <option value="돼지고기">돼지고기</option>
+                    <option value="닭고기">닭고기</option>
+                    <option value="기타">기타</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="part">부위</label>
+                <input type="text" id="part" name="part" placeholder="예: 등심, 안심">
+            </div>
+            <div class="form-group">
+                <label for="grade">등급/판정</label>
+                <input type="text" id="grade" name="grade" placeholder="예: 1++, 1+">
+            </div>
+            <div class="form-group">
+                <label for="price_per_100g">100g당 가격 (원)</label>
+                <input type="number" id="price_per_100g" name="price_per_100g" required>
+            </div>
+            <div class="form-group">
+                <label for="stock_quantity">현재 재고 (kg)</label>
+                <input type="number" step="0.01" id="stock_quantity" name="stock_quantity" required>
+            </div>
+            <div class="form-group">
+                <label for="slaughter_date">도축일</label>
+                <input type="date" id="slaughter_date" name="slaughter_date">
+            </div>
+            <div class="form-group">
+                <label for="trace_number">축산물 이력번호</label>
+                <input type="text" id="trace_number" name="trace_number">
+            </div>
+            <div class="form-group">
+                <label for="image_url">상품 이미지 URL</label>
+                <input type="url" id="image_url" name="image_url" placeholder="https://...">
+            </div>
+        </div>
+
+        <div class="section-card nested-card">
+            <h3>매장 노출 메뉴</h3>
+            <div class="check-grid">
+                <% Object.entries(categoryGroups.menu_section).forEach(([value, label]) => { %>
+                    <label><input type="checkbox" name="menu_sections" value="<%= value %>"> <%= label %></label>
+                <% }) %>
+            </div>
+
+            <h3>사장추천 / 특가 구분</h3>
+            <div class="check-grid">
+                <% Object.entries(categoryGroups.boss_pick_type).forEach(([value, label]) => { %>
+                    <label><input type="radio" name="boss_pick_types" value="<%= value %>"> <%= label %></label>
+                <% }) %>
+            </div>
+
+            <h3>고기 종류</h3>
+            <div class="check-grid">
+                <% Object.entries(categoryGroups.meat_type).forEach(([value, label]) => { %>
+                    <label><input type="checkbox" name="meat_types" value="<%= value %>"> <%= label %></label>
+                <% }) %>
+            </div>
+
+            <h3>상황별 추천 분류</h3>
+            <div class="check-grid">
+                <% Object.entries(categoryGroups.situation).forEach(([value, label]) => { %>
+                    <label><input type="checkbox" name="situations" value="<%= value %>"> <%= label %></label>
+                <% }) %>
+            </div>
+
+            <h3>요리용도 분류</h3>
+            <div class="check-grid">
+                <% Object.entries(categoryGroups.cooking_use).forEach(([value, label]) => { %>
+                    <label><input type="checkbox" name="cooking_uses" value="<%= value %>"> <%= label %></label>
+                <% }) %>
+            </div>
+
+            <h3>가족식탁 분류</h3>
+            <div class="check-grid">
+                <% Object.entries(categoryGroups.family_table).forEach(([value, label]) => { %>
+                    <label><input type="checkbox" name="family_tables" value="<%= value %>"> <%= label %></label>
+                <% }) %>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">상세 설명</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">등록하기</button>
+            <a href="/admin/products" class="btn btn-secondary">취소</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.nested-card {
+    box-shadow: none;
+    border: 1px solid #eee;
+    margin: 20px 0;
+}
+.nested-card h3 {
+    margin: 18px 0 10px;
+    font-size: 1rem;
+}
+.nested-card h3:first-child {
+    margin-top: 0;
+}
+.check-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px 14px;
+}
+.check-grid label {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    padding: 9px 10px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background: #fafafa;
+}
+</style>

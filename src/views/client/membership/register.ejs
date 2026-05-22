@@ -1,0 +1,501 @@
+<section class="membership-page">
+    <section class="member-hero">
+        <div class="member-hero-copy">
+            <span class="eyebrow">FRESH MEAT MEMBERSHIP</span>
+            <h1>단골로 등록하시면 더욱 특별한 가격이 찾아 갑니다.</h1>
+            <p>자주 사는 부위와 식탁 스타일을 남겨두면 매장에서 더 빠르게 추천하고, 혜택도 바로 챙겨드립니다.</p>
+        </div>
+    </section>
+
+    <div class="membership-shell">
+        <%- include('../../partials/brand-spirit-card', { className: 'member-spirit-card brand-spirit-card' }) %>
+
+        <main class="member-main">
+            <form action="/membership/register" method="POST" class="member-form">
+                <div class="member-form-columns">
+                    <div class="member-form-column">
+                        <div class="form-block">
+                            <div class="form-section">
+                                <span class="step">01</span>
+                                <div>
+                                    <h2>기본 정보</h2>
+                                    <p>매장에서 단골 정보를 찾을 때 사용하는 정보입니다.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <label class="field">
+                                    <span>이름</span>
+                                    <input type="text" name="name" required placeholder="홍길동" autocomplete="name">
+                                </label>
+                                <label class="field">
+                                    <span>연락처</span>
+                                    <input type="tel" name="phone" required placeholder="01012345678" autocomplete="tel" inputmode="tel">
+                                </label>
+                            </div>
+
+                            <label class="field">
+                                <span>텔레그램 ID</span>
+                                <input type="text" name="telegram_id" placeholder="@freshmeat">
+                                <small>입력하면 행사 안내와 5,000P 혜택을 받을 수 있습니다.</small>
+                            </label>
+                        </div>
+
+                        <div class="form-block">
+                            <div class="form-section">
+                                <span class="step">02</span>
+                                <div>
+                                    <h2>구매 취향</h2>
+                                    <p>추천 정확도를 높이기 위한 선택 정보입니다.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <label class="field">
+                                    <span>자주 찾는 고기</span>
+                                    <select name="preferred_meat">
+                                        <option value="beef">소고기</option>
+                                        <option value="pork">돼지고기</option>
+                                        <option value="chicken">닭고기</option>
+                                        <option value="mixed">상황별로 다름</option>
+                                    </select>
+                                </label>
+                                <label class="field">
+                                    <span>주 이용 시간</span>
+                                    <select name="visit_time">
+                                        <option value="morning">오전</option>
+                                        <option value="lunch">점심</option>
+                                        <option value="evening">저녁</option>
+                                        <option value="weekend">주말</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="chip-group" aria-label="구매 스타일">
+                                <label><input type="radio" name="shopping_style" value="family" checked><span>가족 식사</span></label>
+                                <label><input type="radio" name="shopping_style" value="solo"><span>1인 소포장</span></label>
+                                <label><input type="radio" name="shopping_style" value="camping"><span>캠핑/바비큐</span></label>
+                                <label><input type="radio" name="shopping_style" value="fitness"><span>식단 관리</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="member-form-column">
+                        <div class="form-block">
+                            <div class="form-section">
+                                <span class="step">03</span>
+                                <div>
+                                    <h2>혜택 방식 선택</h2>
+                                    <p>매장 운영에 맞춰 바로 상담할 수 있게 구분합니다.</p>
+                                </div>
+                            </div>
+
+                            <div class="choice-grid">
+                                <label class="choice-card">
+                                    <input type="radio" name="membership_type" value="basic" checked>
+                                    <span>
+                                        <i class="fas fa-id-card"></i>
+                                        <strong>기본 단골</strong>
+                                        <small>포인트 적립과 행사 안내</small>
+                                    </span>
+                                </label>
+                                <label class="choice-card">
+                                    <input type="radio" name="membership_type" value="prepaid">
+                                    <span>
+                                        <i class="fas fa-wallet"></i>
+                                        <strong>선불 충전</strong>
+                                        <small>충전 고객 전용 추가 혜택</small>
+                                    </span>
+                                </label>
+                                <label class="choice-card">
+                                    <input type="radio" name="membership_type" value="subscription">
+                                    <span>
+                                        <i class="fas fa-calendar-check"></i>
+                                        <strong>정기 구독</strong>
+                                        <small>월 단위 고기 패키지 상담</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-block">
+                            <label class="agree-row">
+                                <input type="checkbox" name="marketing_agree" value="1">
+                                <span>행사, 입고, 쿠폰 안내를 받겠습니다.</span>
+                            </label>
+
+                            <button type="submit" class="submit-button">
+                                단골 등록 완료하기 <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+
+        <aside class="benefit-panel">
+            <div class="member-benefit-card">
+                <img src="/images/fresh-meat-logo.png" alt="프레시미트">
+                <strong>등록 즉시 1,000P</strong>
+                <span>텔레그램 ID 입력 시 5,000P 지급</span>
+            </div>
+            <span class="panel-label">단골 혜택</span>
+            <h2>매번 묻지 않아도 알아서 맞춰드리는 정육 서비스</h2>
+            <ul>
+                <li><i class="fas fa-check"></i> 선호 부위와 용도 기반 추천</li>
+                <li><i class="fas fa-check"></i> 행사 상품 우선 안내</li>
+                <li><i class="fas fa-check"></i> 포인트 적립 및 단골 등급 관리</li>
+                <li><i class="fas fa-check"></i> 명절, 캠핑, 홈파티 세트 빠른 예약</li>
+            </ul>
+            <div class="benefit-stats">
+                <div>
+                    <strong>3초</strong>
+                    <span>연락처 조회</span>
+                </div>
+                <div>
+                    <strong>5,000P</strong>
+                    <span>연동 혜택</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<style>
+.membership-page {
+    background: #f8f3ea;
+    padding: 0 0 70px;
+}
+.member-hero {
+    margin: 0 0 34px;
+    padding: 56px 20px 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    background:
+        linear-gradient(90deg, rgba(23, 75, 50, 0.78), rgba(143, 23, 29, 0.65)),
+        url('https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=1800&q=85') center/cover;
+}
+.member-hero-copy {
+    width: min(1180px, 100%);
+}
+.member-hero h1 {
+    max-width: 1180px;
+    margin: 10px auto 12px;
+    font-size: clamp(2rem, 3.4vw, 3.25rem);
+    line-height: 1.04;
+    white-space: nowrap;
+}
+.member-hero p {
+    max-width: 760px;
+    margin: 0 auto;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.75;
+    font-size: 1.04rem;
+}
+.member-benefit-card {
+    background: #fffdf8;
+    border: 1px solid #eadfce;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 22px;
+}
+.member-benefit-card img {
+    width: 82px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 16px;
+}
+.member-benefit-card strong,
+.member-benefit-card span {
+    display: block;
+}
+.member-benefit-card strong {
+    color: var(--primary);
+    font-size: 1.28rem;
+}
+.member-benefit-card span {
+    color: var(--muted);
+    margin-top: 6px;
+}
+.membership-shell {
+    max-width: none;
+    margin: 0 auto;
+    padding: 0 clamp(18px, 3vw, 48px);
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 220px;
+    gap: clamp(16px, 2vw, 28px);
+    align-items: start;
+}
+.member-main {
+    min-width: 0;
+    max-width: none;
+}
+.benefit-panel,
+.member-form {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 16px 42px rgba(66, 42, 18, 0.07);
+}
+.benefit-panel {
+    position: sticky;
+    top: calc(50vh - 250px);
+    padding: 18px;
+    justify-self: end;
+    width: 220px;
+}
+.member-spirit-card {
+    position: sticky;
+    top: 104px;
+}
+.panel-label {
+    color: var(--gold);
+    font-weight: 800;
+    font-size: 0.78rem;
+}
+.benefit-panel h2 {
+    margin: 10px 0 18px;
+    font-size: 1.25rem;
+    line-height: 1.25;
+}
+.benefit-panel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+}
+.benefit-panel li {
+    display: flex;
+    gap: 10px;
+    color: var(--muted);
+    line-height: 1.45;
+}
+.benefit-panel i {
+    color: var(--green);
+    margin-top: 3px;
+}
+.benefit-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 24px;
+}
+.benefit-stats div {
+    background: var(--paper);
+    border-radius: 8px;
+    padding: 14px;
+}
+.benefit-stats strong,
+.benefit-stats span {
+    display: block;
+}
+.benefit-stats strong {
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+.benefit-stats span {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.86rem;
+}
+.member-form {
+    padding: 26px;
+}
+.member-form-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+.member-form-column {
+    display: grid;
+    gap: 22px;
+}
+.form-block {
+    min-width: 0;
+}
+.form-section {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 4px 0 18px;
+}
+.step {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex: 0 0 auto;
+}
+.form-section h2 {
+    margin: 0;
+    font-size: 1.28rem;
+}
+.form-section p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    line-height: 1.45;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.field {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+.field span {
+    font-weight: 800;
+    color: var(--green);
+}
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fffdf8;
+    padding: 14px;
+    font: inherit;
+    color: var(--ink);
+    outline: none;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(143, 23, 29, 0.1);
+}
+.field small {
+    color: var(--muted);
+}
+.choice-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 26px;
+}
+.choice-card {
+    cursor: pointer;
+}
+.choice-card input,
+.chip-group input {
+    position: absolute;
+    opacity: 0;
+}
+.choice-card > span {
+    min-height: 104px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fffdf8;
+}
+.choice-card i {
+    color: var(--gold);
+    font-size: 1.3rem;
+}
+.choice-card strong {
+    color: var(--ink);
+    font-size: 1.06rem;
+}
+.choice-card small {
+    color: var(--muted);
+    line-height: 1.35;
+}
+.choice-card input:checked + span {
+    background: #fff2f1;
+    border-color: var(--primary);
+    box-shadow: inset 0 0 0 1px var(--primary);
+}
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 16px;
+}
+.chip-group label span {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 9px 14px;
+    background: #fff;
+    color: var(--green);
+    font-weight: 800;
+    cursor: pointer;
+}
+.chip-group input:checked + span {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+}
+.agree-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 12px 0 18px;
+    color: var(--muted);
+}
+.agree-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+}
+.submit-button {
+    width: 100%;
+    min-height: 56px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+@media (max-width: 860px) {
+    .membership-shell,
+    .member-form-columns,
+    .form-grid,
+    .choice-grid {
+        grid-template-columns: 1fr;
+    }
+    .member-hero {
+        margin-bottom: 22px;
+        padding: 44px 16px 28px;
+        text-align: left;
+    }
+    .membership-shell {
+        padding: 0 16px;
+    }
+    .benefit-panel {
+        position: static;
+        padding: 20px;
+        width: 100%;
+    }
+    .member-spirit-card {
+        position: static;
+    }
+    .member-form {
+        padding: 20px;
+    }
+    .member-hero h1 {
+        font-size: 2.35rem;
+        white-space: normal;
+    }
+}
+</style>

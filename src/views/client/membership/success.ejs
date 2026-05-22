@@ -1,0 +1,102 @@
+<section class="success-page">
+    <div class="success-card">
+        <img src="/images/fresh-meat-logo.png" alt="프레시미트">
+        <span class="success-badge"><i class="fas fa-check"></i> 등록 완료</span>
+        <h1>프레시미트 단골 등록이 완료됐습니다.</h1>
+        <p>다음 방문부터 연락처로 단골 정보를 확인하고, 선택하신 취향에 맞춰 더 빠르게 추천해드릴게요.</p>
+        <div class="reward-box">
+            <div>
+                <span>지급 포인트</span>
+                <strong><%= points.toLocaleString() %>P</strong>
+            </div>
+            <div>
+                <span>회원 유형</span>
+                <strong><%= membershipType === 'prepaid' ? '선불 충전' : membershipType === 'subscription' ? '정기 구독' : '기본 단골' %></strong>
+            </div>
+        </div>
+        <div class="success-actions">
+            <a href="/products" class="btn btn-primary">상품 보러가기</a>
+            <a href="/" class="btn btn-light">홈으로</a>
+        </div>
+    </div>
+</section>
+
+<style>
+.success-page {
+    min-height: calc(100vh - 180px);
+    padding: 60px 20px;
+    display: grid;
+    place-items: center;
+    background: #f8f3ea;
+}
+.success-card {
+    width: min(620px, 100%);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 34px;
+    text-align: center;
+    box-shadow: 0 18px 48px rgba(66, 42, 18, 0.08);
+}
+.success-card img {
+    width: 110px;
+    height: 82px;
+    object-fit: contain;
+    margin: 0 auto 14px;
+}
+.success-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(33, 79, 53, 0.1);
+    color: var(--green);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-weight: 800;
+}
+.success-card h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.15;
+}
+.success-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+.reward-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 24px 0;
+}
+.reward-box div {
+    background: var(--paper);
+    border-radius: 8px;
+    padding: 16px;
+}
+.reward-box span,
+.reward-box strong {
+    display: block;
+}
+.reward-box span {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+.reward-box strong {
+    margin-top: 4px;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+.success-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+@media (max-width: 540px) {
+    .success-page { padding: 34px 16px; }
+    .success-card { padding: 24px 18px; }
+    .reward-box,
+    .success-actions { grid-template-columns: 1fr; display: grid; }
+}
+</style>

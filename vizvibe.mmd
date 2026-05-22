@@ -1,0 +1,70 @@
+flowchart TD
+    %% === PROJECT GOALS ===
+    %% Ultimate Goal: 스마트 정육 관리 및 이커머스 쇼핑몰 구축
+    %% Current Goal: 관리자 대시보드 핵심 레이아웃 완성 및 DB 스키마 설계
+
+    %% === START ===
+    %% @project_start [start, closed, 2026-04-09, antigravity]
+    project_start("프로젝트 시작<br/><sub>정육점 쇼핑몰 웹사이트<br/>기초 기획 및 개발 환경<br/>구축 단계</sub>")
+
+    %% === COMPLETED WORK ===
+    %% @env_setup [ai-task, closed, 2026-04-09, antigravity]
+    env_setup("기초 환경 구축<br/><sub>Node.js, Express, EJS,<br/>MariaDB 연결 설정 및<br/>MVC 폴더 구조 생성 완료</sub>")
+
+    %% @admin_ui [ai-task, closed, 2026-04-09, antigravity]
+    admin_ui("관리자 레이아웃 구축<br/><sub>사이드바 기반 프리미엄<br/>어드민 대시보드 UI 및<br/>대시보드 위젯 구현 완료</sub>")
+
+    %% @db_schema [ai-task, closed, 2026-04-09, antigravity]
+    db_schema("DB 스키마 상세 설계<br/><sub>도축 정보, mm 단위 옵션,<br/>텔레그램 ID를 포함한<br/>데이터베이스 구조 설계</sub>")
+
+    %% === FUTURE WORK ===
+    %% @feature_product [ai-task, closed, 2026-04-09, antigravity]
+    feature_product("상품 관리 및 테마 쇼핑<br/><sub>Admin 상품 관리 및 테마별<br/>(사장추천/상황별/Care)<br/>클라이언트 탐색 UI 구현</sub>")
+
+    %% @feature_membership [ai-task, closed, 2026-04-09, antigravity]
+    feature_membership("멤버십 & 단골등록<br/><sub>이름/연락처 기반 단골등록,<br/>선불충전/구독형 유형 선택 및<br/>관리자 혜택 설정 기능 구현</sub>")
+
+    %% @feature_ui_client [ai-task, closed, 2026-04-09, antigravity]
+    feature_ui_client("쇼핑몰 클라이언트 UI<br/><sub>모바일 최적화 프리미엄<br/>반응형 홈 및 PWA 기초<br/>설정 완료</sub>")
+
+    %% @feature_ai [ai-task, closed, 2026-04-09, antigravity]
+    feature_ai("AI 고기 품질 분석<br/><sub>Gemini API 활용 분석<br/>(사용자용 기능으로<br/>클라이언트 측 이동 완료)</sub>")
+
+    %% @feature_iot [ai-task, closed, 2026-04-09, antigravity]
+    feature_iot("QR/NFC 레시피 연동<br/><sub>상품 스캔 시 요리법 및<br/>이력 정보 제공 모바일<br/>페이지 구현 완료</sub>")
+
+    %% === CONNECTIONS ===
+    project_start --> env_setup
+    env_setup --> admin_ui
+    env_setup --> db_schema
+    admin_ui --> feature_product
+    admin_ui --> feature_membership
+    admin_ui --> feature_iot
+    db_schema --> feature_product
+    db_schema --> feature_membership
+    feature_ui_client --> feature_product
+    feature_ui_client --> feature_ai
+    feature_ai -.-> feature_product
+    feature_iot --> feature_product
+
+    %% === RECENT WORK HIGHLIGHT ===
+    subgraph recent [RECENT]
+        feature_iot
+    end
+
+    %% === STYLES ===
+    %% Closed tasks
+    style project_start fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style env_setup fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style db_schema fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style admin_ui fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style feature_product fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style feature_membership fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style feature_ai fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+    style feature_ui_client fill:#1a1a2e,stroke:#a78bfa,color:#c4b5fd,stroke-width:1px
+
+    %% Recent node
+    style feature_iot fill:#2d1f4e,stroke:#c084fc,color:#e9d5ff,stroke-width:2px
+
+    %% Recent subgraph
+    style recent fill:transparent,stroke:#c084fc,color:#c084fc,stroke-width:2px,stroke-dasharray:5 5

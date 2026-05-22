@@ -1,0 +1,366 @@
+<article class="recipe-page">
+    <header class="recipe-hero">
+        <span class="recipe-tag">FRESH MEAT RECIPE</span>
+        <h1><%= product.name %> 레시피</h1>
+        <p>좌측에서 원하는 레시피를 고르면 우측에서 재료와 조리방법을 바로 확인할 수 있습니다.</p>
+        <% if (product.trace_number) { %>
+            <div class="trace-info">
+                <i class="fas fa-barcode"></i> 축산물 이력번호: <strong><%= product.trace_number %></strong>
+            </div>
+        <% } %>
+    </header>
+
+    <% if (recipes.length) { %>
+        <section class="recipe-workspace">
+            <aside class="recipe-list-panel" aria-label="레시피 목록">
+                <h2>레시피 목록</h2>
+                <div class="recipe-list">
+                    <% recipes.forEach((recipe, index) => { %>
+                        <button class="recipe-list-item <%= index === 0 ? 'active' : '' %>" type="button" data-recipe="<%= recipe.id %>">
+                            <span>RECIPE <%= index + 1 %></span>
+                            <strong><%= recipe.recipe_title %></strong>
+                        </button>
+                    <% }) %>
+                </div>
+            </aside>
+
+            <section class="recipe-detail-panel">
+                <% recipes.forEach((recipe, index) => { %>
+                    <article class="recipe-detail <%= index === 0 ? 'active' : '' %>" data-recipe-detail="<%= recipe.id %>">
+                        <div class="recipe-detail-top">
+                            <div class="recipe-card-head">
+                                <span>SELECTED RECIPE</span>
+                                <h2><%= recipe.recipe_title %></h2>
+                            </div>
+                            <% if (recipe.plating_image_url) { %>
+                                <figure class="plating-preview">
+                                    <img src="<%= recipe.plating_image_url %>" alt="<%= recipe.recipe_title %> 플래팅 참고 사진">
+                                    <figcaption>플래팅 참고</figcaption>
+                                </figure>
+                            <% } %>
+                        </div>
+
+                        <div class="recipe-block ingredients-block">
+                            <h3><i class="fas fa-basket-shopping"></i> 재료</h3>
+                            <div class="ingredients-text"><%- (recipe.ingredients || '등록된 재료가 없습니다.').replace(/\n/g, '<br>') %></div>
+                            <button class="btn btn-light print-ingredients-button" type="button">
+                                <i class="fas fa-print"></i> 재료 출력하기
+                            </button>
+                        </div>
+
+                        <div class="recipe-block method-block">
+                            <h3><i class="fas fa-fire-burner"></i> 조리방법</h3>
+                            <div class="method-text"><%- (recipe.cooking_steps || '등록된 조리방법이 없습니다.').replace(/\n/g, '<br>') %></div>
+                            <% if (recipe.video_url) { %>
+                                <a class="btn btn-primary video-button" href="<%= recipe.video_url %>" target="_blank" rel="noopener">
+                                    <i class="fab fa-youtube"></i> 영상보기
+                                </a>
+                            <% } else { %>
+                                <button class="btn btn-primary video-button disabled" type="button" disabled>
+                                    <i class="fab fa-youtube"></i> 영상보기
+                                </button>
+                            <% } %>
+                        </div>
+                    </article>
+                <% }) %>
+            </section>
+        </section>
+    <% } else { %>
+        <section class="empty-recipe">
+            <h2>준비 중인 레시피입니다.</h2>
+            <p>매장에서 곧 이 상품에 맞는 레시피를 등록할 예정입니다.</p>
+        </section>
+    <% } %>
+
+    <nav class="recipe-actions">
+        <a href="/products" class="btn btn-light">상품으로 돌아가기</a>
+    </nav>
+</article>
+
+<script>
+document.querySelectorAll('.recipe-list-item').forEach(button => {
+    button.addEventListener('click', () => {
+        const id = button.dataset.recipe;
+        document.querySelectorAll('.recipe-list-item').forEach(item => {
+            item.classList.toggle('active', item === button);
+        });
+        document.querySelectorAll('.recipe-detail').forEach(detail => {
+            const isActive = detail.dataset.recipeDetail === id;
+            detail.classList.toggle('active', isActive);
+            if (isActive) {
+                detail.classList.remove('is-entering');
+                void detail.offsetWidth;
+                detail.classList.add('is-entering');
+            }
+        });
+    });
+});
+
+document.querySelectorAll('.print-ingredients-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const recipe = button.closest('.recipe-detail');
+        const title = recipe.querySelector('.recipe-card-head h2').textContent.trim();
+        const ingredients = recipe.querySelector('.ingredients-text').innerText.trim();
+        const steps = recipe.querySelector('.method-text').innerText.trim();
+        const printWindow = window.open('', '_blank', 'width=520,height=720');
+        if (!printWindow) return;
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="ko">
+            <head>
+                <meta charset="UTF-8">
+                <title>${title} 재료와 조리방법</title>
+                <style>
+                    body { font-family: "Noto Sans KR", sans-serif; padding: 28px; line-height: 1.8; }
+                    h1 { font-size: 24px; margin-bottom: 18px; }
+                    h2 { font-size: 18px; margin: 24px 0 8px; }
+                    pre { white-space: pre-wrap; font-family: inherit; font-size: 16px; }
+                </style>
+            </head>
+            <body>
+                <h1>${title}</h1>
+                <h2>재료</h2>
+                <pre>${ingredients}</pre>
+                <h2>조리방법</h2>
+                <pre>${steps}</pre>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    });
+});
+</script>
+
+<style>
+.recipe-page {
+    background: #f8f3ea;
+    min-height: 100vh;
+    padding: 28px 16px 70px;
+}
+.recipe-hero,
+.recipe-workspace,
+.recipe-actions,
+.empty-recipe {
+    max-width: 1040px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.recipe-hero {
+    padding: 34px 0 22px;
+}
+.recipe-tag {
+    display: inline-flex;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(143, 23, 29, 0.1);
+    color: var(--primary);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.recipe-hero h1 {
+    margin: 12px 0 8px;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+}
+.recipe-hero p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+.trace-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    color: var(--green);
+    font-size: 0.95rem;
+}
+.recipe-workspace {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+}
+.recipe-list-panel,
+.recipe-detail,
+.empty-recipe {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(66, 42, 18, 0.08);
+}
+.recipe-list-panel {
+    position: sticky;
+    top: 104px;
+    padding: 16px;
+}
+.recipe-list-panel h2 {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+}
+.recipe-list {
+    display: grid;
+    gap: 8px;
+}
+.recipe-list-item {
+    display: grid;
+    gap: 5px;
+    width: 100%;
+    padding: 13px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fffdf8;
+    color: var(--ink);
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+.recipe-list-item span {
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 900;
+}
+.recipe-list-item strong {
+    line-height: 1.35;
+}
+.recipe-list-item:hover,
+.recipe-list-item:focus-visible,
+.recipe-list-item.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(143, 23, 29, 0.18);
+}
+.recipe-list-item:hover span,
+.recipe-list-item:focus-visible span,
+.recipe-list-item.active span {
+    color: rgba(255,255,255,0.78);
+}
+.recipe-detail-panel {
+    min-width: 0;
+}
+.recipe-detail {
+    display: none;
+    padding: 24px;
+}
+.recipe-detail.active {
+    display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .recipe-detail.active.is-entering {
+        animation: recipeDetailEnter 0.36s ease both;
+    }
+    @keyframes recipeDetailEnter {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+.recipe-card-head span {
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.recipe-detail-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 18px;
+    align-items: start;
+}
+.recipe-card-head h2 {
+    margin: 7px 0 18px;
+    color: var(--ink);
+}
+.plating-preview {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fffdf8;
+}
+.plating-preview img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.32s ease;
+}
+.plating-preview:hover img {
+    transform: scale(1.045);
+}
+.plating-preview figcaption {
+    padding: 10px 12px;
+    color: var(--green);
+    font-weight: 900;
+    font-size: 0.9rem;
+}
+.recipe-block {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    margin-top: 16px;
+}
+.ingredients-block {
+    display: grid;
+}
+.recipe-block h3 {
+    margin: 0 0 10px;
+    color: var(--primary);
+    font-size: 1rem;
+}
+.recipe-block div {
+    color: var(--muted);
+    line-height: 1.8;
+}
+.method-block {
+    display: grid;
+}
+.video-button,
+.print-ingredients-button {
+    justify-self: end;
+    margin-top: 18px;
+}
+.video-button.disabled,
+.video-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+    filter: grayscale(0.35);
+}
+.recipe-actions {
+    margin-top: 22px;
+}
+.recipe-actions .btn {
+    justify-content: center;
+}
+@media (max-width: 760px) {
+    .recipe-workspace {
+        grid-template-columns: 1fr;
+    }
+    .recipe-list-panel {
+        position: static;
+    }
+    .recipe-list {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+    .recipe-list-item {
+        flex: 0 0 min(78vw, 260px);
+    }
+    .video-button,
+    .print-ingredients-button {
+        justify-self: stretch;
+        justify-content: center;
+    }
+    .recipe-detail-top {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

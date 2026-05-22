@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : '프레시미트' %></title>
+    <link rel="icon" href="/images/fresh-meat-logo.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <main>
+        <%- body %>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script>
+        (() => {
+            const cards = document.querySelectorAll('[data-spirit-card]');
+            if (!cards.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            let timer;
+            window.addEventListener('scroll', () => {
+                cards.forEach(card => card.classList.remove('is-scroll-breathing'));
+                void document.body.offsetWidth;
+                cards.forEach(card => card.classList.add('is-scroll-breathing'));
+                window.clearTimeout(timer);
+                timer = window.setTimeout(() => {
+                    cards.forEach(card => card.classList.remove('is-scroll-breathing'));
+                }, 180);
+            }, { passive: true });
+        })();
+    </script>
+</body>
+</html>

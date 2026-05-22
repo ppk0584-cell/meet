@@ -1,0 +1,999 @@
+<div class="shop-container">
+    <section class="shop-hero">
+        <span class="eyebrow">FRESH DISPLAY</span>
+        <h1>오늘 먹고 싶은 고기를 한눈에.</h1>
+        <p>소, 돼지, 닭을 상황과 요리 목적별로 묶어 고객이 바로 고를 수 있게 구성했습니다.</p>
+    </section>
+
+    <div class="shop-scroll-layout">
+        <%- include('../../partials/brand-spirit-card', { className: 'market-belief brand-spirit-card' }) %>
+
+        <main class="shop-main-sections">
+            <section class="shop-section product-scroll-section" id="boss-picks" data-visual="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=85" data-title="사장추천 / 특가 상품">
+                <div class="section-header">
+                    <span class="badge secondary">BEST SELLER</span>
+                    <h2>사장추천 / 특가 상품</h2>
+                    <p>입고 상태와 판매 반응이 좋은 상품만 앞에 배치했습니다.</p>
+                </div>
+                <div class="product-grid">
+                    <% if (sections.bossPicks.length > 0) { %>
+                        <% sections.bossPicks.forEach(product => { %>
+                            <%- include('card', { product }) %>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="empty-state">추천 메뉴를 준비 중입니다.</div>
+                    <% } %>
+                </div>
+            </section>
+
+            <section class="shop-section bg-alt product-scroll-section" id="theme-shop" data-visual="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=85" data-title="어떤 메뉴로 해야지?">
+                <div class="section-header">
+                    <span class="badge accent">THEME SHOP</span>
+                    <h2>어떤 메뉴로 해야지?</h2>
+                    <p>홈파티, 집밥, 야식, 캠핑처럼 구매 상황에 맞춰 보여줍니다.</p>
+                </div>
+                <div class="theme-tabs">
+                    <button class="theme-tab" data-theme="party">홈파티</button>
+                    <button class="theme-tab" data-theme="home_meal">집밥</button>
+                    <button class="theme-tab" data-theme="late_night">야식</button>
+                    <button class="theme-tab" data-theme="camping">캠핑</button>
+                </div>
+                <div class="product-grid">
+                    <% sections.homeParty.forEach(product => { %>
+                        <%- include('card', { product }) %>
+                    <% }) %>
+                </div>
+            </section>
+
+            <section class="shop-section product-scroll-section" id="cooking-use-shop" data-visual="https://images.unsplash.com/photo-1551028150-64b9f398f678?auto=format&fit=crop&w=800&q=85" data-title="요리 용도용">
+                <div class="section-header">
+                    <span class="badge primary">COOKING CUT</span>
+                    <h2>요리 용도용</h2>
+                    <p>구이, 국·찌개, 볶음·불고기처럼 조리 방식에 맞는 판매 목록입니다.</p>
+                </div>
+                <div class="cooking-tabs">
+                    <button class="cooking-tab" data-cooking="grill">구이용</button>
+                    <button class="cooking-tab" data-cooking="soup_stew">국·찌개용</button>
+                    <button class="cooking-tab" data-cooking="stir_fry_bulgogi">볶음·불고기용</button>
+                    <button class="cooking-tab" data-cooking="braise">찜·조림용</button>
+                    <button class="cooking-tab" data-cooking="boil_bossam_jangjorim">수육·보쌈·장조림용</button>
+                </div>
+                <div class="product-grid">
+                    <% sections.cookingUse.forEach(product => { %>
+                        <%- include('card', { product }) %>
+                    <% }) %>
+                </div>
+            </section>
+
+            <section class="shop-section product-scroll-section" id="family-shop" data-visual="https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=85" data-title="가족 식탁 추천">
+                <div class="section-header">
+                    <span class="badge primary">CARE SHOP</span>
+                    <h2>가족 식탁 추천</h2>
+                    <p>아이, 부모님, 1인 가구, 운동 식단까지 목적이 분명한 상품입니다.</p>
+                </div>
+                <div class="family-tabs">
+                    <button class="family-tab" data-family="happy_table">가족행복 식탁</button>
+                    <button class="family-tab" data-family="kids_safe">아이 안심 반찬</button>
+                    <button class="family-tab" data-family="parents_care">부모님 보양</button>
+                    <button class="family-tab" data-family="wellness_diet">웰빙/다이어트</button>
+                    <button class="family-tab" data-family="mixed">혼합용</button>
+                </div>
+                <div class="product-grid family-product-grid">
+                    <% sections.family.forEach(product => { %>
+                        <div class="family-product" data-family="<%= product.family_category || 'mixed' %>">
+                            <%- include('card', { product }) %>
+                        </div>
+                    <% }) %>
+                </div>
+            </section>
+        </main>
+
+        <aside class="visual-scroll-nav" aria-label="상품 사진 네비게이션">
+            <div class="type-symbol-filter" aria-label="고기 종류 필터">
+                <button type="button" data-type="all" title="전체"><span class="type-symbol all" aria-hidden="true">ALL</span></button>
+                <button type="button" data-type="beef" title="소고기">
+                    <span class="type-symbol animal animal-cow" aria-hidden="true">
+                        <svg class="hanwoo-head" viewBox="0 0 64 64" focusable="false">
+                            <path class="hanwoo-ear" d="M18 24 4 17l3 19 14-5M42 25l17-5-7 16-12-5"/>
+                            <path class="hanwoo-horn" d="M24 18C18 9 17 4 21 2c7 3 9 10 9 17M42 18C49 9 50 4 46 2c-7 3-9 10-9 17"/>
+                            <path class="hanwoo-face" d="M18 18c7-7 25-7 32 3 5 7 2 24-8 29-9 5-25 0-29-10-3-8-1-16 5-22Z"/>
+                            <path class="hanwoo-muzzle" d="M12 39c7-5 20-3 24 4 1 7-6 13-17 10-8-2-11-9-7-14Z"/>
+                            <path class="hanwoo-smile" d="M18 45c6 3 12 2 17-1"/>
+                            <path class="hanwoo-cheek" d="M46 35c-2 5-5 8-9 10"/>
+                            <circle class="hanwoo-eye" cx="39" cy="30" r="2.4"/>
+                            <circle class="hanwoo-nose" cx="18" cy="44" r="1.6"/>
+                        </svg>
+                    </span>
+                </button>
+                <button type="button" data-type="pork" title="돼지고기"><span class="type-symbol animal animal-pig" aria-hidden="true">🐷</span></button>
+                <button type="button" data-type="chicken" title="닭고기"><span class="type-symbol animal animal-chicken" aria-hidden="true">🐔</span></button>
+                <button type="button" data-type="etc" title="세트"><span class="type-symbol set" aria-hidden="true">SET</span></button>
+            </div>
+            <div class="visual-card">
+                <img id="floatingVisual" src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=85" alt="사장추천 / 특가 상품">
+                <span id="floatingLabel">사장추천 / 특가 상품</span>
+            </div>
+            <div class="visual-dots">
+                <a class="active" href="#boss-picks" data-target="boss-picks">사장추천 / 특가</a>
+                <a href="#theme-shop" data-target="theme-shop">상황별 추천</a>
+                <a href="#cooking-use-shop" data-target="cooking-use-shop">요리용도</a>
+                <a href="#family-shop" data-target="family-shop">가족식탁</a>
+            </div>
+        </aside>
+    </div>
+</div>
+<div class="cart-toast" role="status" aria-live="polite">장바구니에 담았습니다</div>
+
+<script>
+const visualSections = [...document.querySelectorAll('.product-scroll-section')];
+const floatingVisual = document.getElementById('floatingVisual');
+const floatingLabel = document.getElementById('floatingLabel');
+const visualLinks = [...document.querySelectorAll('.visual-dots a')];
+const productSections = [...document.querySelectorAll('.product-scroll-section')];
+let activeSectionId = visualSections[0]?.id;
+let visualTimer;
+let visualPhotoIndex = 0;
+let visualPhotoTimer;
+let activeTypeFilter = null;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function sectionPhotos(section) {
+    return [...section.querySelectorAll('.product-card:not(.carousel-clone) .card-image img')]
+        .map(img => ({ src: img.currentSrc || img.src, alt: img.alt }))
+        .filter(item => item.src);
+}
+
+function startVisualPhotoRotation(section) {
+    clearInterval(visualPhotoTimer);
+    const photos = sectionPhotos(section);
+    if (!photos.length) return;
+    visualPhotoIndex = 0;
+    floatingVisual.src = photos[0].src;
+    floatingVisual.alt = photos[0].alt || section.dataset.title;
+    visualPhotoTimer = setInterval(() => {
+        const latestPhotos = sectionPhotos(section);
+        if (!latestPhotos.length) return;
+        visualPhotoIndex = (visualPhotoIndex + 1) % latestPhotos.length;
+        floatingVisual.classList.remove('is-sliding');
+        void floatingVisual.offsetWidth;
+        floatingVisual.src = latestPhotos[visualPhotoIndex].src;
+        floatingVisual.alt = latestPhotos[visualPhotoIndex].alt || section.dataset.title;
+        floatingVisual.classList.add('is-sliding');
+    }, 1000);
+}
+
+function setActiveVisual(section) {
+    if (!section || section.id === activeSectionId) return;
+    activeSectionId = section.id;
+    floatingLabel.textContent = section.dataset.title;
+    startVisualPhotoRotation(section);
+    visualLinks.forEach(link => link.classList.toggle('active', link.dataset.target === section.id));
+}
+
+function updateVisualOnScroll() {
+    if (window.innerWidth < 1100) return;
+    const viewportMiddle = window.innerHeight / 2;
+    const closest = visualSections.reduce((best, section) => {
+        const rect = section.getBoundingClientRect();
+        const distance = Math.abs((rect.top + rect.height * 0.32) - viewportMiddle);
+        return distance < best.distance ? { section, distance } : best;
+    }, { section: visualSections[0], distance: Infinity }).section;
+    setActiveVisual(closest);
+}
+
+window.addEventListener('scroll', updateVisualOnScroll, { passive: true });
+window.addEventListener('resize', updateVisualOnScroll);
+updateVisualOnScroll();
+startVisualPhotoRotation(visualSections[0]);
+
+function productElements(section) {
+    return [...section.querySelectorAll('.product-card')]
+        .filter(card => !card.closest('.carousel-clone'))
+        .map(card => card.closest('.family-product') || card);
+}
+
+function visibleProductElements(section) {
+    return productElements(section).filter(item => !item.hidden);
+}
+
+function animateVisibleCards(scope = document) {
+    if (prefersReducedMotion) return;
+    const cards = [...scope.querySelectorAll('.product-card:not(.carousel-clone)')]
+        .filter(card => !card.hidden && !card.closest('[hidden]'));
+    cards.forEach((card, index) => {
+        card.classList.remove('is-card-visible');
+        card.style.setProperty('--card-delay', `${Math.min(index, 7) * 55}ms`);
+        window.setTimeout(() => card.classList.add('is-card-visible'), 20);
+    });
+}
+
+function refreshCarousel(section) {
+    const grid = section.querySelector('.product-grid');
+    if (!grid) return;
+    const visibleCount = visibleProductElements(section).length;
+    grid.classList.toggle('is-carousel', visibleCount >= 4);
+    if (visibleCount >= 4 && !grid.dataset.carouselReady) {
+        setupCarousel(grid);
+    }
+    syncCarouselClones(section);
+    animateVisibleCards(section);
+}
+
+function ensureCarouselClones(grid) {
+    if (grid.dataset.clonesReady) return;
+    [...grid.children].forEach(child => {
+        const clone = child.cloneNode(true);
+        clone.classList.add('carousel-clone');
+        clone.setAttribute('aria-hidden', 'true');
+        grid.appendChild(clone);
+    });
+    grid.dataset.clonesReady = 'true';
+}
+
+function syncCarouselClones(section) {
+    const grid = section.querySelector('.product-grid');
+    if (!grid) return;
+    const originals = [...grid.children].filter(child => !child.classList.contains('carousel-clone'));
+    const clones = [...grid.children].filter(child => child.classList.contains('carousel-clone'));
+    clones.forEach((clone, index) => {
+        const original = originals[index % originals.length];
+        clone.hidden = !grid.classList.contains('is-carousel') || !original || original.hidden;
+        clone.classList.toggle('is-fill-product', !!original?.classList.contains('is-fill-product'));
+        clone.style.order = original ? String(Number(original.style.order || index) + 1000) : '';
+    });
+}
+
+function showAllInSection(section) {
+    section.querySelectorAll('.theme-tab, .cooking-tab, .family-tab').forEach(tab => tab.classList.remove('active'));
+    productElements(section).forEach(item => {
+        const card = item.classList.contains('product-card') ? item : item.querySelector('.product-card');
+        item.classList.remove('is-fill-product');
+        item.style.order = '';
+        item.hidden = activeTypeFilter && card.dataset.category !== activeTypeFilter;
+    });
+    refreshCarousel(section);
+}
+
+function showAllProducts() {
+    activeTypeFilter = null;
+    document.querySelectorAll('.type-symbol-filter button').forEach(tab => tab.classList.remove('active'));
+    productElements(document).forEach(item => {
+        item.hidden = false;
+        item.classList.remove('is-fill-product');
+        item.style.order = '';
+    });
+    productSections.forEach(refreshCarousel);
+    animateVisibleCards();
+}
+
+function filterProductsByCategory(category) {
+    activeTypeFilter = category === 'all' ? null : category;
+    document.querySelectorAll('.type-symbol-filter button').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.type === category);
+    });
+    productElements(document).forEach(item => {
+        const card = item.classList.contains('product-card') ? item : item.querySelector('.product-card');
+        item.classList.remove('is-fill-product');
+        item.style.order = '';
+        item.hidden = category !== 'all' && card.dataset.category !== category;
+    });
+    productSections.forEach(refreshCarousel);
+    animateVisibleCards();
+}
+
+document.querySelectorAll('.type-symbol-filter button').forEach(tab => {
+    tab.addEventListener('click', () => {
+        if (tab.dataset.type === 'all') {
+            showAllProducts();
+            tab.classList.add('active');
+        } else {
+            filterProductsByCategory(tab.dataset.type);
+        }
+    });
+});
+
+const themeTabs = [...document.querySelectorAll('.theme-tab')];
+const themeSection = document.getElementById('theme-shop');
+function applySectionSubFilter(section, key, value, activeTabs) {
+    section.classList.add('is-filtering');
+    activeTabs.forEach(tab => {
+        const tabValue = tab.dataset.theme || tab.dataset.cooking || tab.dataset.family;
+        tab.classList.toggle('active', tabValue === value);
+    });
+
+    const items = productElements(section).map((item, index) => {
+        const card = item.classList.contains('product-card') ? item : item.querySelector('.product-card');
+        const typeMatches = !activeTypeFilter || card.dataset.category === activeTypeFilter;
+        const subMatches = card.dataset[key] === value || item.dataset[key] === value;
+        item.hidden = true;
+        item.classList.remove('is-fill-product');
+        item.style.order = '';
+        return { item, index, typeMatches, subMatches };
+    });
+
+    const selected = items.filter(entry => entry.typeMatches && entry.subMatches);
+    const fillers = items.filter(entry => entry.typeMatches && !entry.subMatches).slice(0, Math.max(0, 4 - selected.length));
+
+    selected.forEach((entry, index) => {
+        entry.item.hidden = false;
+        entry.item.style.order = String(index);
+    });
+    fillers.forEach((entry, index) => {
+        entry.item.hidden = false;
+        entry.item.classList.add('is-fill-product');
+        entry.item.style.order = String(selected.length + index);
+    });
+
+    refreshCarousel(section);
+    window.setTimeout(() => section.classList.remove('is-filtering'), 260);
+}
+
+themeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        applySectionSubFilter(themeSection, 'theme', tab.dataset.theme, themeTabs);
+    });
+});
+
+const cookingTabs = [...document.querySelectorAll('.cooking-tab')];
+const cookingSection = document.getElementById('cooking-use-shop');
+cookingTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        applySectionSubFilter(cookingSection, 'cooking', tab.dataset.cooking, cookingTabs);
+    });
+});
+
+const familyTabs = [...document.querySelectorAll('.family-tab')];
+function setFamilyCategory(category) {
+    applySectionSubFilter(document.getElementById('family-shop'), 'family', category, familyTabs);
+}
+familyTabs.forEach(tab => {
+    tab.addEventListener('click', () => setFamilyCategory(tab.dataset.family));
+});
+
+function setupCarousel(grid) {
+    grid.dataset.carouselReady = 'true';
+    ensureCarouselClones(grid);
+    let paused = false;
+    let dragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    const speed = 0.32;
+
+    const stop = () => { paused = true; };
+    const resume = () => {
+        if (!dragging) paused = false;
+    };
+
+    grid.addEventListener('mouseenter', stop);
+    grid.addEventListener('mouseleave', resume);
+    grid.addEventListener('touchstart', stop, { passive: true });
+    grid.addEventListener('touchend', resume);
+    grid.addEventListener('pointerdown', (event) => {
+        dragging = true;
+        paused = true;
+        startX = event.clientX;
+        startScrollLeft = grid.scrollLeft;
+        grid.classList.add('is-dragging');
+    });
+    window.addEventListener('pointermove', (event) => {
+        if (!dragging) return;
+        grid.scrollLeft = startScrollLeft - (event.clientX - startX);
+    });
+    window.addEventListener('pointerup', () => {
+        if (!dragging) return;
+        dragging = false;
+        grid.classList.remove('is-dragging');
+        window.setTimeout(resume, 450);
+    });
+
+    function tick() {
+        if (!paused && grid.classList.contains('is-carousel') && grid.scrollWidth > grid.clientWidth) {
+            grid.scrollLeft += speed;
+            if (grid.scrollLeft >= (grid.scrollWidth - grid.clientWidth) / 2) {
+                grid.scrollLeft = 0;
+            }
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+const sectionResetObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        showAllInSection(entry.target);
+        if (entry.target.id === 'theme-shop') {
+            themeTabs.forEach(tab => tab.classList.remove('active'));
+        }
+        if (entry.target.id === 'cooking-use-shop') {
+            cookingTabs.forEach(tab => tab.classList.remove('active'));
+        }
+        if (entry.target.id === 'family-shop') {
+            familyTabs.forEach(tab => tab.classList.remove('active'));
+        }
+    });
+}, { threshold: 0.55 });
+
+productSections.forEach(section => {
+    sectionResetObserver.observe(section);
+    refreshCarousel(section);
+});
+
+const cardRevealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-card-visible');
+        cardRevealObserver.unobserve(entry.target);
+    });
+}, { threshold: 0.18 });
+
+document.querySelectorAll('.product-card:not(.carousel-clone)').forEach((card, index) => {
+    card.style.setProperty('--card-delay', `${Math.min(index, 7) * 55}ms`);
+    cardRevealObserver.observe(card);
+});
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('.cart-button');
+    if (!button) return;
+
+    button.classList.add('is-added');
+    button.querySelector('.cart-label').textContent = '담김';
+    const icon = button.querySelector('i');
+    icon.className = 'fas fa-check';
+    window.clearTimeout(button._cartTimer);
+    const toast = document.querySelector('.cart-toast');
+    if (toast) {
+        toast.classList.remove('show');
+        void toast.offsetWidth;
+        toast.classList.add('show');
+        window.clearTimeout(toast._timer);
+        toast._timer = window.setTimeout(() => toast.classList.remove('show'), 1400);
+    }
+    button._cartTimer = window.setTimeout(() => {
+        button.classList.remove('is-added');
+        button.querySelector('.cart-label').textContent = '담기';
+        icon.className = 'fas fa-plus';
+    }, 1200);
+});
+</script>
+
+<style>
+.products-page-snap {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+.products-page-snap .shop-hero,
+.products-page-snap .product-scroll-section {
+    scroll-snap-align: start;
+    scroll-margin-top: 96px;
+}
+.products-page-snap .product-scroll-section {
+    min-height: calc(100vh - 82px);
+}
+.shop-container { padding-bottom: 50px; }
+.shop-hero {
+    padding: 56px 20px 34px;
+    color: #fff;
+    background:
+        linear-gradient(90deg, rgba(33,79,53,0.88), rgba(143,23,29,0.58)),
+        url('https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1500&q=85');
+    background-size: cover;
+    background-position: center;
+}
+.shop-hero h1 {
+    max-width: 1180px;
+    margin: 8px auto;
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.05;
+}
+.shop-hero p,
+.shop-hero .eyebrow {
+    display: block;
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.shop-hero p {
+    max-width: 560px;
+    margin-top: 0;
+    color: rgba(255,255,255,0.84);
+    line-height: 1.7;
+}
+.shop-section {
+    max-width: none;
+    margin: 0 auto;
+    padding: 36px 0 24px;
+}
+.shop-scroll-layout {
+    max-width: none;
+    margin: 0 auto;
+    padding: 0 clamp(18px, 3vw, 48px);
+    display: grid;
+    grid-template-columns: 220px minmax(760px, 1fr) 200px;
+    gap: clamp(16px, 2vw, 28px);
+    align-items: start;
+}
+.market-belief {
+    position: sticky;
+    top: 104px;
+    min-height: calc(100vh - 190px);
+}
+.shop-main-sections {
+    min-width: 0;
+}
+.shop-main-sections > .product-scroll-section > .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 240px));
+    justify-content: start;
+}
+.product-grid.is-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: auto;
+    scroll-snap-type: x proximity;
+    cursor: grab;
+    scrollbar-width: none;
+    user-select: none;
+}
+.product-grid.is-carousel::-webkit-scrollbar {
+    display: none;
+}
+.product-grid.is-carousel.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+}
+.product-grid.is-carousel > .product-card,
+.product-grid.is-carousel > .family-product {
+    flex: 0 0 calc((100% - 54px) / 4);
+    min-width: 200px;
+    scroll-snap-align: start;
+}
+.product-grid.is-carousel > .family-product[hidden],
+.product-grid.is-carousel > .product-card[hidden] {
+    display: none;
+}
+.product-grid:not(.is-carousel) > .carousel-clone {
+    display: none;
+}
+.bg-alt {
+    max-width: none;
+    background: #fff6eb;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 24px;
+    margin-top: 0;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
+.section-header {
+    margin-bottom: 16px;
+}
+.section-header h2 {
+    margin: 10px 0 6px;
+    font-size: clamp(1.55rem, 3vw, 2.25rem);
+}
+.section-header p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+.theme-tabs,
+.cooking-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+}
+.family-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.family-tab,
+.cooking-tab {
+    min-height: 42px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--green);
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.family-tab.active,
+.cooking-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+.family-product[hidden] {
+    display: none;
+}
+.family-product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 240px));
+    justify-content: start;
+}
+.family-product {
+    min-width: 0;
+}
+.theme-tab {
+    min-height: 42px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--green);
+    font-weight: 800;
+    white-space: nowrap;
+}
+.theme-tab.active {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+}
+.empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+}
+.visual-scroll-nav {
+    position: sticky;
+    top: calc(50vh - 260px);
+    align-self: start;
+    width: 200px;
+    justify-self: end;
+}
+.type-symbol-filter {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.94);
+    box-shadow: 0 12px 26px rgba(66, 42, 18, 0.08);
+}
+.type-symbol-filter button {
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.type-symbol-filter button:hover,
+.type-symbol-filter button:focus-visible,
+.type-symbol-filter button:active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    transform: translateY(-4px) scale(1.12);
+    box-shadow: 0 14px 28px rgba(143, 23, 29, 0.24);
+}
+.type-symbol-filter button.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(143, 23, 29, 0.18);
+}
+.type-symbol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-weight: 900;
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+.type-symbol.animal {
+    font-size: 1.16rem;
+    transform: translateY(1px);
+}
+.type-symbol.animal-cow,
+.type-symbol.animal-pig,
+.type-symbol.animal-chicken {
+    text-shadow: none;
+    background: transparent;
+}
+.hanwoo-head {
+    width: 1.48rem;
+    height: 1.48rem;
+    display: block;
+    overflow: visible;
+}
+.hanwoo-face {
+    fill: #b87539;
+    stroke: #17110f;
+    stroke-width: 4;
+    stroke-linejoin: round;
+}
+.hanwoo-horn {
+    fill: #fffaf2;
+    stroke: #17110f;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.hanwoo-ear {
+    fill: #c78347;
+    stroke: #17110f;
+    stroke-width: 4;
+    stroke-linejoin: round;
+}
+.hanwoo-muzzle {
+    fill: #e0ad83;
+    stroke: #17110f;
+    stroke-width: 3.5;
+    stroke-linejoin: round;
+}
+.hanwoo-smile,
+.hanwoo-cheek {
+    fill: none;
+    stroke: #17110f;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+.hanwoo-eye,
+.hanwoo-nose {
+    fill: #17110f;
+}
+.type-symbol-filter button:hover .hanwoo-face,
+.type-symbol-filter button:focus-visible .hanwoo-face,
+.type-symbol-filter button.active .hanwoo-face {
+    fill: #c88749;
+    stroke: #fffaf2;
+}
+.type-symbol-filter button:hover .hanwoo-ear,
+.type-symbol-filter button:focus-visible .hanwoo-ear,
+.type-symbol-filter button.active .hanwoo-ear {
+    fill: #d09155;
+    stroke: #fffaf2;
+}
+.type-symbol-filter button:hover .hanwoo-horn,
+.type-symbol-filter button:focus-visible .hanwoo-horn,
+.type-symbol-filter button.active .hanwoo-horn {
+    fill: #fffaf2;
+    stroke: #fff4d8;
+}
+.type-symbol-filter button:hover .hanwoo-muzzle,
+.type-symbol-filter button:focus-visible .hanwoo-muzzle,
+.type-symbol-filter button.active .hanwoo-muzzle,
+.type-symbol-filter button:hover .hanwoo-smile,
+.type-symbol-filter button:focus-visible .hanwoo-smile,
+.type-symbol-filter button.active .hanwoo-smile,
+.type-symbol-filter button:hover .hanwoo-cheek,
+.type-symbol-filter button:focus-visible .hanwoo-cheek,
+.type-symbol-filter button.active .hanwoo-cheek {
+    stroke: #fffaf2;
+}
+.type-symbol-filter button:hover .hanwoo-eye,
+.type-symbol-filter button:focus-visible .hanwoo-eye,
+.type-symbol-filter button.active .hanwoo-eye,
+.type-symbol-filter button:hover .hanwoo-nose,
+.type-symbol-filter button:focus-visible .hanwoo-nose,
+.type-symbol-filter button.active .hanwoo-nose {
+    fill: #fffaf2;
+}
+.type-symbol.set {
+    font-size: 0.74rem;
+}
+.visual-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #fff;
+    box-shadow: 0 18px 48px rgba(66, 42, 18, 0.12);
+    transition: box-shadow 0.42s ease;
+    margin-top: 10px;
+}
+.visual-card img {
+    width: 100%;
+    aspect-ratio: 2.8 / 4;
+    object-fit: cover;
+    display: block;
+}
+.visual-card img.is-sliding {
+    animation: photoSlideDown 0.42s ease both;
+}
+@keyframes photoSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-22px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.visual-card span {
+    display: block;
+    padding: 14px;
+    color: var(--green);
+    font-weight: 800;
+}
+.product-scroll-section.is-filtering .product-card:not(.carousel-clone) {
+    transition: opacity 0.24s ease, transform 0.24s ease, box-shadow 0.24s ease;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .product-card:not(.carousel-clone) {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+        transition: opacity 0.42s ease var(--card-delay, 0ms), transform 0.42s ease var(--card-delay, 0ms), box-shadow 0.18s ease;
+    }
+    .product-card:not(.carousel-clone).is-card-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    .product-card:not(.carousel-clone):hover {
+        transform: translateY(-5px) scale(1.01);
+    }
+    .tag-ribbon {
+        animation: tagPulse 3.8s ease-in-out infinite;
+    }
+    @keyframes tagPulse {
+        0%, 72%, 100% { box-shadow: 0 0 0 rgba(143, 23, 29, 0); }
+        82% { box-shadow: 0 0 0 7px rgba(143, 23, 29, 0.12); }
+    }
+}
+.visual-dots {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+.visual-dots a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--green);
+    padding: 9px 12px;
+    font-weight: 800;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.visual-dots a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--primary);
+    transform: translateX(-105%);
+    transition: transform 0.26s ease;
+    z-index: -1;
+}
+.visual-dots a:hover,
+.visual-dots a:focus-visible,
+.visual-dots a:active {
+    color: #fff;
+    border-color: var(--primary);
+    background: var(--primary);
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 15px 30px rgba(143, 23, 29, 0.26);
+}
+.visual-dots a:hover::before,
+.visual-dots a:focus-visible::before,
+.visual-dots a:active::before {
+    transform: translateX(0);
+}
+.visual-dots a.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 12px 26px rgba(143, 23, 29, 0.16);
+}
+.cart-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translate(-50%, 18px);
+    z-index: 2000;
+    background: var(--green);
+    color: #fff;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-weight: 900;
+    box-shadow: 0 18px 38px rgba(33, 79, 53, 0.24);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.cart-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+@media (max-width: 820px) {
+    .products-page-snap .shop-hero,
+    .products-page-snap .product-scroll-section {
+        scroll-margin-top: 72px;
+    }
+    .products-page-snap .product-scroll-section {
+        min-height: calc(100vh - 62px);
+    }
+    .shop-hero { padding: 44px 16px 28px; }
+    .shop-section { padding: 28px 16px 20px; }
+    .family-tabs,
+    .cooking-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+    .family-product-grid {
+        grid-template-columns: 1fr;
+    }
+    .product-grid.is-carousel > .product-card,
+    .product-grid.is-carousel > .family-product {
+        flex-basis: min(82vw, 320px);
+    }
+    .bg-alt {
+        margin-top: 0;
+        padding: 28px 16px 20px;
+    }
+}
+@media (max-width: 1099px) {
+    .shop-scroll-layout {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+    .market-belief,
+    .visual-scroll-nav {
+        position: static;
+        margin: 20px 16px 0;
+        min-height: auto;
+    }
+    .market-belief {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 14px;
+        align-items: center;
+    }
+    .market-belief img {
+        width: 110px;
+        height: 86px;
+        margin: 0;
+    }
+    .market-belief p,
+    .belief-list {
+        grid-column: 1 / -1;
+    }
+    .visual-scroll-nav {
+        display: block;
+        order: -1;
+    }
+    .visual-card,
+    .visual-dots {
+        display: none;
+    }
+    .type-symbol-filter {
+        display: flex;
+        justify-content: center;
+        margin: 0 0 12px;
+        padding: 8px;
+    }
+    .type-symbol-filter button {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+    }
+}
+</style>
+
+<script>
+document.documentElement.classList.add('products-page-snap');
+window.addEventListener('beforeunload', () => {
+    document.documentElement.classList.remove('products-page-snap');
+});
+</script>

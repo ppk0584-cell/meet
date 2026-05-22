@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 - 스마트 정육 관리</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>정육점 관리</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="/admin"><i class="fas fa-home"></i> 대시보드</a></li>
+                    <li><a href="/admin/products"><i class="fas fa-box"></i> 상품/재고 관리</a></li>
+                    <li><a href="/admin/orders"><i class="fas fa-shopping-cart"></i> 결제 관리</a></li>
+                    <li><a href="/admin/members"><i class="fas fa-users"></i> 회원 목록 관리</a></li>
+                    <li><a href="/admin/membership/settings"><i class="fas fa-cog"></i> 멤버십 혜택 설정</a></li>
+                    <li><a href="/admin/content"><i class="fas fa-file-alt"></i> 콘텐츠 관리</a></li>
+                    <li class="separator"></li>
+                    <li><a href="/"><i class="fas fa-external-link-alt"></i> 상점으로 이동</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+                    <h1><%= title %></h1>
+                </div>
+                <div class="header-right">
+                    <span class="admin-name">관리자 님</span>
+                    <a href="/logout" class="logout-btn">로그아웃</a>
+                </div>
+            </header>
+
+            <section class="content-body">
+                <%- body %>
+            </section>
+        </main>
+    </div>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
