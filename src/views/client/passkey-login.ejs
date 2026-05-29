@@ -1,0 +1,250 @@
+<section class="passkey-page">
+    <div class="passkey-hero">
+        <span class="eyebrow">PASSKEY LOGIN</span>
+        <h1>패스키로 빠르게 단골 확인</h1>
+        <p>등록된 패스키가 있으면 바로 로그인하고, 없으면 같은 화면에서 패스키를 등록한 뒤 로그인합니다.</p>
+    </div>
+
+    <div class="passkey-shell">
+        <%- include('../partials/brand-spirit-card', { className: 'passkey-spirit-card brand-spirit-card' }) %>
+
+        <main class="passkey-card" data-passkey-card>
+            <% if (member) { %>
+                <div class="passkey-state success">
+                    <i class="fas fa-circle-check"></i>
+                    <div>
+                        <span>로그인 완료</span>
+                        <strong><%= member.name || '단골 고객' %>님</strong>
+                        <p>패스키로 단골 정보가 확인되었습니다.</p>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="passkey-state">
+                    <i class="fas fa-key"></i>
+                    <div>
+                        <span>패스키 로그인</span>
+                        <strong>연락처로 단골을 확인합니다</strong>
+                        <p>패스키가 없으면 등록 화면으로 끊기지 않고 바로 등록을 이어갑니다.</p>
+                    </div>
+                </div>
+
+                <form class="passkey-form" data-passkey-form>
+                    <label class="field">
+                        <span>이름</span>
+                        <input type="text" name="name" placeholder="홍길동" autocomplete="name">
+                    </label>
+                    <label class="field">
+                        <span>연락처</span>
+                        <input type="tel" name="phone" required placeholder="01012345678" autocomplete="tel" inputmode="tel">
+                    </label>
+                    <button type="submit" class="submit-button">
+                        패스키로 로그인 <i class="fas fa-fingerprint"></i>
+                    </button>
+                </form>
+                <p class="passkey-message" data-passkey-message role="status" aria-live="polite"></p>
+            <% } %>
+        </main>
+
+        <aside class="passkey-side">
+            <strong>패스키가 없을 때</strong>
+            <span>연락처 확인 후 기기 잠금해제 방식으로 패스키를 등록하고 바로 로그인합니다.</span>
+        </aside>
+    </div>
+</section>
+
+<% if (!member) { %>
+<script type="module">
+import { startAuthentication, startRegistration } from 'https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@13.3.0/+esm';
+
+const form = document.querySelector('[data-passkey-form]');
+const message = document.querySelector('[data-passkey-message]');
+
+function setMessage(text, tone = '') {
+    message.textContent = text;
+    message.dataset.tone = tone;
+}
+
+async function postJSON(url, body) {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    const data = await response.json();
+    if (!response.ok || data.ok === false) {
+        throw new Error(data.message || '요청을 처리하지 못했습니다.');
+    }
+    return data;
+}
+
+async function registerAndLogin(profile) {
+    setMessage('등록된 패스키가 없어 새 패스키를 등록합니다.', 'info');
+    const registration = await postJSON('/passkeys/registration/options', profile);
+    const credential = await startRegistration({ optionsJSON: registration.options });
+    const result = await postJSON('/passkeys/registration/verify', credential);
+    setMessage('패스키 등록과 로그인이 완료되었습니다.', 'success');
+    window.setTimeout(() => window.location.assign(result.redirect || '/passkey-login'), 500);
+}
+
+form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = form.querySelector('button');
+    const profile = Object.fromEntries(new FormData(form).entries());
+    button.disabled = true;
+    setMessage('패스키를 확인합니다.', 'info');
+
+    try {
+        const auth = await postJSON('/passkeys/authentication/options', profile);
+        if (auth.needsRegistration) {
+            await registerAndLogin(profile);
+            return;
+        }
+
+        const assertion = await startAuthentication({ optionsJSON: auth.options });
+        const result = await postJSON('/passkeys/authentication/verify', assertion);
+        setMessage('패스키 로그인이 완료되었습니다.', 'success');
+        window.setTimeout(() => window.location.assign(result.redirect || '/passkey-login'), 500);
+    } catch (error) {
+        if (/not.?allowed|not.?found|no credentials|등록된 패스키가 없습니다/i.test(error.message)) {
+            try {
+                await registerAndLogin(profile);
+                return;
+            } catch (registrationError) {
+                setMessage(registrationError.message, 'error');
+            }
+        } else {
+            setMessage(error.message, 'error');
+        }
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+<% } %>
+
+<style>
+.passkey-page {
+    background: #f8f3ea;
+    padding-bottom: 70px;
+}
+.passkey-hero {
+    padding: 56px 20px 34px;
+    color: #fff;
+    text-align: center;
+    background:
+        linear-gradient(90deg, rgba(33,79,53,0.88), rgba(143,23,29,0.58)),
+        url('https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1500&q=85') center/cover;
+}
+.passkey-hero h1 {
+    max-width: 1180px;
+    margin: 8px auto;
+    font-size: clamp(2rem, 4.2vw, 3.8rem);
+    line-height: 1.05;
+}
+.passkey-hero p {
+    max-width: 680px;
+    margin: 0 auto;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.7;
+}
+.passkey-shell {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 680px) 220px;
+    gap: clamp(16px, 2vw, 28px);
+    align-items: start;
+    padding: 34px clamp(18px, 3vw, 48px) 0;
+}
+.passkey-spirit-card,
+.passkey-side {
+    position: sticky;
+    top: 104px;
+}
+.passkey-card,
+.passkey-side {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 16px 42px rgba(66, 42, 18, 0.07);
+}
+.passkey-card {
+    padding: 28px;
+}
+.passkey-state {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+.passkey-state i {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: var(--green);
+    flex: 0 0 auto;
+}
+.passkey-state span {
+    display: block;
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.passkey-state strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 1.45rem;
+}
+.passkey-state p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+.passkey-form {
+    display: grid;
+    gap: 10px;
+}
+.passkey-message {
+    min-height: 1.4em;
+    margin: 16px 0 0;
+    color: var(--muted);
+    font-weight: 800;
+}
+.passkey-message[data-tone="success"] { color: var(--green); }
+.passkey-message[data-tone="error"] { color: var(--primary); }
+.passkey-side {
+    padding: 18px;
+}
+.passkey-side strong,
+.passkey-side span {
+    display: block;
+}
+.passkey-side strong {
+    color: var(--primary);
+    font-size: 1.05rem;
+}
+.passkey-side span {
+    margin-top: 8px;
+    color: var(--muted);
+    line-height: 1.55;
+}
+@media (max-width: 860px) {
+    .passkey-hero {
+        padding: 44px 16px 28px;
+        text-align: left;
+    }
+    .passkey-shell {
+        grid-template-columns: 1fr;
+        padding: 22px 16px 0;
+    }
+    .passkey-spirit-card,
+    .passkey-side {
+        position: static;
+    }
+    .passkey-card {
+        padding: 20px;
+    }
+}
+</style>

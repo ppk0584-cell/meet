@@ -91,6 +91,21 @@ CREATE TABLE IF NOT EXISTS members (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS passkey_credentials (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id INT NOT NULL,
+    credential_id VARCHAR(255) NOT NULL UNIQUE,
+    public_key TEXT NOT NULL,
+    counter BIGINT DEFAULT 0,
+    transports TEXT,
+    device_type VARCHAR(50),
+    backed_up BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_used_at TIMESTAMP NULL,
+    INDEX idx_passkey_member_id (member_id),
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+);
+
 -- Membership Benefits Settings
 CREATE TABLE IF NOT EXISTS membership_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
