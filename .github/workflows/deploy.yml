@@ -9,68 +9,54 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      SSH_HOST: ${{ secrets.SSH_HOST || '116.124.128.96' }}
-      SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
-      SSH_USER: ${{ secrets.SSH_USER || 'root' }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD || secrets.SSH_PASS || secrets.SERVER_PASSWORD || secrets.PASSWORD }}
-      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/freshmatmall/current' }}
-      PM2_APP: ${{ secrets.PM2_APP || 'freshmatmall' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare SSH key
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
-          mkdir -p ~/.ssh
-          if [ -z "$SSH_PASSWORD" ]; then
-            echo "SSH_PASSWORD secret이 비어 있습니다. SSH_PASSWORD, SSH_PASS, SERVER_PASSWORD, PASSWORD 중 하나로 등록해주세요."
-            exit 1
-          fi
-          echo "Deploy target: $SSH_USER@$SSH_HOST:$SSH_PORT"
-          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
-
       - name: Upload source to server
-        run: |
-          export SSHPASS="$SSH_PASSWORD"
-          SSH_CMD=(sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes -o PreferredAuthentications=password -o PubkeyAuthentication=no)
-
-          "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "echo SSH_OK && rm -rf /tmp/freshmatmall-release && mkdir -p /tmp/freshmatmall-release"
-
-          tar \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='.env' \
-            -czf - . | "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "tar -xzf - -C /tmp/freshmatmall-release"
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST || '116.124.128.96' }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          username: ${{ secrets.SSH_USER || 'root' }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "."
+          target: "/tmp/freshmatmall-release"
+          rm: true
+          overwrite: true
+          strip_components: 0
+          exclude: |
+            .git
+            node_modules
+            .env
 
       - name: Install and restart on server
-        run: |
-          export SSHPASS="$SSH_PASSWORD"
-          SSH_CMD=(sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes -o PreferredAuthentications=password -o PubkeyAuthentication=no)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST || '116.124.128.96' }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          username: ${{ secrets.SSH_USER || 'root' }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            set -e
+            APP_DIR="${{ secrets.DEPLOY_PATH || '/var/www/freshmatmall/current' }}"
+            RELEASE_DIR="/tmp/freshmatmall-release"
+            PM2_APP="${{ secrets.PM2_APP || 'freshmatmall' }}"
 
-          "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" <<EOF
-          set -e
-          APP_DIR="$DEPLOY_PATH"
-          RELEASE_DIR="/tmp/freshmatmall-release"
-          PM2_APP="$PM2_APP"
+            [ -f "$APP_DIR/.env" ] && cp "$APP_DIR/.env" /tmp/freshmatmall.env || true
+            rm -rf /tmp/freshmatmall.git
+            [ -d "$APP_DIR/.git" ] && cp -a "$APP_DIR/.git" /tmp/freshmatmall.git || true
 
-          [ -f "$APP_DIR/.env" ] && cp "$APP_DIR/.env" /tmp/freshmatmall.env || true
-          rm -rf /tmp/freshmatmall.git
-          [ -d "$APP_DIR/.git" ] && cp -a "$APP_DIR/.git" /tmp/freshmatmall.git || true
+            find "$APP_DIR" -mindepth 1 -maxdepth 1 ! -name node_modules -exec rm -rf {} +
+            cp -a "$RELEASE_DIR"/. "$APP_DIR"/
 
-          find "$APP_DIR" -mindepth 1 -maxdepth 1 ! -name node_modules -exec rm -rf {} +
-          cp -a "$RELEASE_DIR"/. "$APP_DIR"/
+            [ -f /tmp/freshmatmall.env ] && cp /tmp/freshmatmall.env "$APP_DIR/.env"
+            [ -d /tmp/freshmatmall.git ] && cp -a /tmp/freshmatmall.git "$APP_DIR/.git"
 
-          [ -f /tmp/freshmatmall.env ] && cp /tmp/freshmatmall.env "$APP_DIR/.env"
-          [ -d /tmp/freshmatmall.git ] && cp -a /tmp/freshmatmall.git "$APP_DIR/.git"
+            cd "$APP_DIR"
+            npm ci --omit=dev
+            pm2 restart "$PM2_APP" --update-env
+            pm2 save
 
-          cd "$APP_DIR"
-          npm ci --omit=dev
-          pm2 restart "$PM2_APP" --update-env
-          pm2 save
-
-          curl -fsS https://freshmatmall.kr/ping
-          EOF
+            curl -fsS https://freshmatmall.kr/ping
