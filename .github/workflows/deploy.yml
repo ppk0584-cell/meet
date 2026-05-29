@@ -59,4 +59,10 @@ jobs:
             pm2 restart "$PM2_APP" --update-env
             pm2 save
 
+            for attempt in 1 2 3 4 5; do
+              if curl -fsS https://freshmatmall.kr/ping; then
+                exit 0
+              fi
+              sleep 3
+            done
             curl -fsS https://freshmatmall.kr/ping
