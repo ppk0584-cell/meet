@@ -20,7 +20,7 @@ jobs:
           host: ${{ secrets.SSH_HOST || '116.124.128.96' }}
           port: ${{ secrets.SSH_PORT || '22' }}
           username: ${{ secrets.SSH_USER || 'root' }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_PASSWORD || vars.SSH_PASSWORD }}
           source: "."
           target: "/tmp/freshmatmall-release"
           rm: true
@@ -37,7 +37,7 @@ jobs:
           host: ${{ secrets.SSH_HOST || '116.124.128.96' }}
           port: ${{ secrets.SSH_PORT || '22' }}
           username: ${{ secrets.SSH_USER || 'root' }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_PASSWORD || vars.SSH_PASSWORD }}
           script: |
             set -e
             APP_DIR="${{ secrets.DEPLOY_PATH || '/var/www/freshmatmall/current' }}"
