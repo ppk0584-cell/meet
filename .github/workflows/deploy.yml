@@ -1,0 +1,61 @@
+name: Deploy Fresh Meat Mall
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload source to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/tmp/freshmatmall-release"
+          rm: true
+          overwrite: true
+          exclude: |
+            .git
+            node_modules
+            .env
+
+      - name: Install and restart on server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            APP_DIR="${{ secrets.DEPLOY_PATH }}"
+            RELEASE_DIR="/tmp/freshmatmall-release"
+            PM2_APP="${{ secrets.PM2_APP }}"
+
+            [ -f "$APP_DIR/.env" ] && cp "$APP_DIR/.env" /tmp/freshmatmall.env || true
+            rm -rf /tmp/freshmatmall.git
+            [ -d "$APP_DIR/.git" ] && cp -a "$APP_DIR/.git" /tmp/freshmatmall.git || true
+
+            find "$APP_DIR" -mindepth 1 -maxdepth 1 ! -name node_modules -exec rm -rf {} +
+            cp -a "$RELEASE_DIR"/. "$APP_DIR"/
+
+            [ -f /tmp/freshmatmall.env ] && cp /tmp/freshmatmall.env "$APP_DIR/.env"
+            [ -d /tmp/freshmatmall.git ] && cp -a /tmp/freshmatmall.git "$APP_DIR/.git"
+
+            cd "$APP_DIR"
+            npm ci --omit=dev
+            pm2 restart "$PM2_APP" --update-env
+            pm2 save
+
+            curl -fsS https://freshmatmall.kr/ping
