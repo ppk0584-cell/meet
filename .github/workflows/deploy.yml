@@ -13,7 +13,6 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
       PM2_APP: ${{ secrets.PM2_APP }}
@@ -28,45 +27,29 @@ jobs:
           sudo apt-get install -y sshpass
           mkdir -p ~/.ssh
           ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
-          if [ -n "$SSH_PASSWORD" ]; then
-            echo "SSH_AUTH_MODE=password" >> "$GITHUB_ENV"
-          elif [ -n "$SSH_PRIVATE_KEY" ]; then
-            printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
-            chmod 600 ~/.ssh/deploy_key
-            echo "SSH_AUTH_MODE=key" >> "$GITHUB_ENV"
-          else
-            echo "SSH_PRIVATE_KEY 또는 SSH_PASSWORD secret 중 하나가 필요합니다."
+          if [ -z "$SSH_PASSWORD" ]; then
+            echo "SSH_PASSWORD secret이 필요합니다."
             exit 1
           fi
+          echo "SSH password secret is configured."
 
       - name: Upload source to server
         run: |
-          if [ "$SSH_AUTH_MODE" = "key" ]; then
-            SSH_CMD=(ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" -o StrictHostKeyChecking=yes)
-            RSYNC_SSH="ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o StrictHostKeyChecking=yes"
-          else
-            export SSHPASS="$SSH_PASSWORD"
-            SSH_CMD=(sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes)
-            RSYNC_SSH="sshpass -e ssh -p $SSH_PORT -o StrictHostKeyChecking=yes"
-          fi
+          export SSHPASS="$SSH_PASSWORD"
+          SSH_CMD=(sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes -o PreferredAuthentications=password -o PubkeyAuthentication=no)
 
-          "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "rm -rf /tmp/freshmatmall-release && mkdir -p /tmp/freshmatmall-release"
+          "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "echo SSH_OK && rm -rf /tmp/freshmatmall-release && mkdir -p /tmp/freshmatmall-release"
 
-          rsync -az --delete \
-            -e "$RSYNC_SSH" \
+          tar \
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='.env' \
-            ./ "$SSH_USER@$SSH_HOST:/tmp/freshmatmall-release/"
+            -czf - . | "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "tar -xzf - -C /tmp/freshmatmall-release"
 
       - name: Install and restart on server
         run: |
-          if [ "$SSH_AUTH_MODE" = "key" ]; then
-            SSH_CMD=(ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" -o StrictHostKeyChecking=yes)
-          else
-            export SSHPASS="$SSH_PASSWORD"
-            SSH_CMD=(sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes)
-          fi
+          export SSHPASS="$SSH_PASSWORD"
+          SSH_CMD=(sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes -o PreferredAuthentications=password -o PubkeyAuthentication=no)
 
           "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" <<EOF
           set -e
