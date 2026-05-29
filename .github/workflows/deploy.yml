@@ -10,12 +10,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_PORT: ${{ secrets.SSH_PORT }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-      PM2_APP: ${{ secrets.PM2_APP }}
+      SSH_HOST: ${{ secrets.SSH_HOST || '116.124.128.96' }}
+      SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+      SSH_USER: ${{ secrets.SSH_USER || 'root' }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD || secrets.SSH_PASS || secrets.SERVER_PASSWORD || secrets.PASSWORD }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/freshmatmall/current' }}
+      PM2_APP: ${{ secrets.PM2_APP || 'freshmatmall' }}
 
     steps:
       - name: Checkout
@@ -26,12 +26,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y sshpass
           mkdir -p ~/.ssh
-          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
           if [ -z "$SSH_PASSWORD" ]; then
-            echo "SSH_PASSWORD secret이 필요합니다."
+            echo "SSH_PASSWORD secret이 비어 있습니다. SSH_PASSWORD, SSH_PASS, SERVER_PASSWORD, PASSWORD 중 하나로 등록해주세요."
             exit 1
           fi
-          echo "SSH password secret is configured."
+          echo "Deploy target: $SSH_USER@$SSH_HOST:$SSH_PORT"
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
       - name: Upload source to server
         run: |
