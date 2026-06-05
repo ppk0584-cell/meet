@@ -4,6 +4,8 @@ const adminController = require('../controllers/adminController');
 const productController = require('../controllers/productController');
 const memberController = require('../controllers/memberController');
 const recipeController = require('../controllers/recipeController');
+const fileController = require('../controllers/fileController');
+const campingOrderController = require('../controllers/campingOrderController');
 const multer = require('multer');
 const path = require('path');
 
@@ -17,6 +19,18 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, fileController.storageDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, fileController.uniqueStoredName(file.originalname));
+    }
+});
+const fileUpload = multer({
+    storage: fileStorage,
+    limits: { fileSize: 50 * 1024 * 1024 }
+});
 
 router.get('/', adminController.index);
 
@@ -33,5 +47,15 @@ router.get('/members', memberController.list);
 router.post('/members/benefit/:id', memberController.applyBenefit);
 router.get('/membership/settings', memberController.settings);
 router.post('/membership/settings', memberController.updateSettings);
+
+// Order Management
+router.get('/orders', campingOrderController.adminList);
+
+// File Management
+router.get('/files', fileController.list);
+router.post('/files/upload', fileUpload.single('managed_file'), fileController.upload);
+router.post('/files/download-url', fileController.downloadFromUrl);
+router.get('/files/:id/download', fileController.download);
+router.post('/files/:id/delete', fileController.remove);
 
 module.exports = router;

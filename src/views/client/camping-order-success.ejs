@@ -1,0 +1,110 @@
+<section class="camping-success">
+    <% if (errors && errors.length) { %>
+        <div class="camping-success-card is-error">
+            <span class="eyebrow">ORDER CHECK</span>
+            <h1>주문 정보를 다시 확인해주세요</h1>
+            <ul>
+                <% errors.forEach(error => { %>
+                    <li><%= error %></li>
+                <% }) %>
+            </ul>
+            <a href="/products#camping-ready" class="btn btn-primary">주문 화면으로 돌아가기</a>
+        </div>
+    <% } else { %>
+        <div class="camping-success-card">
+            <span class="eyebrow">CAMPING ORDER</span>
+            <h1>캠핑준비 주문이 접수됐습니다</h1>
+            <p>주문번호 <strong><%= order.order_number %></strong>로 판매자가 수령희망일자와 수령지를 다시 확인합니다.</p>
+            <% if (order.holiday_warning) { %>
+                <div class="camping-warning">
+                    <strong>수령지 재확인 필요</strong>
+                    <span><%= order.holiday_warning_reason %></span>
+                </div>
+            <% } %>
+            <dl>
+                <div>
+                    <dt>수령희망일자</dt>
+                    <dd><%= order.requested_receive_date %></dd>
+                </div>
+                <div>
+                    <dt>수령지</dt>
+                    <dd><%= order.destination_type === 'campground' ? '캠핑장' : '거주지' %></dd>
+                </div>
+                <% if (order.campground_name) { %>
+                    <div>
+                        <dt>캠핑장</dt>
+                        <dd><%= order.campground_name %></dd>
+                    </div>
+                <% } %>
+                <div>
+                    <dt>주소</dt>
+                    <dd><%= order.delivery_address %> <%= order.delivery_detail || '' %></dd>
+                </div>
+            </dl>
+            <a href="/products" class="btn btn-primary">상품 페이지로 돌아가기</a>
+        </div>
+    <% } %>
+</section>
+
+<style>
+.camping-success {
+    min-height: 620px;
+    padding: 72px 20px;
+    display: grid;
+    place-items: center;
+    background:
+        linear-gradient(90deg, rgba(33,79,53,0.86), rgba(143,23,29,0.58)),
+        url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=85') center/cover;
+}
+.camping-success-card {
+    width: min(720px, 100%);
+    padding: 34px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255,250,242,0.96);
+    box-shadow: 0 24px 60px rgba(28,16,12,0.24);
+}
+.camping-success-card h1 {
+    margin: 8px 0 12px;
+    color: var(--green);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.05;
+}
+.camping-success-card p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+.camping-success-card dl {
+    display: grid;
+    gap: 10px;
+    margin: 24px 0;
+}
+.camping-success-card dl div,
+.camping-warning {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+}
+.camping-success-card dt {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+.camping-success-card dd {
+    margin: 4px 0 0;
+    color: var(--ink);
+    font-weight: 800;
+}
+.camping-warning {
+    display: grid;
+    gap: 4px;
+    border-color: rgba(143,23,29,0.22);
+    background: #fff4ec;
+    color: var(--primary);
+}
+.camping-success-card.is-error ul {
+    color: var(--primary);
+    line-height: 1.8;
+}
+</style>

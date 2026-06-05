@@ -86,6 +86,109 @@
                     <% }) %>
                 </div>
             </section>
+            <section class="shop-section camping-ready-section" id="camping-ready">
+                <div class="camping-ready-copy">
+                    <span class="badge accent">CAMPING SET</span>
+                    <h2>캠핑준비 주문하면 끝</h2>
+                    <p>캠핑용 고기, 야채, 집게와 장갑 같은 고기 먹을 때 필요한 용품을 한 번에 묶어 캠핑장 또는 거주지로 받을 수 있게 접수합니다.</p>
+                    <ul>
+                        <li>고기 세트: 구이용 고기와 캠핑 인원에 맞춘 기본 구성</li>
+                        <li>야채 세트: 쌈채소, 마늘, 고추, 버섯 등 선택 구성</li>
+                        <li>용품 세트: 집게, 위생장갑, 일회용 접시, 숯불 보조용품 메모 가능</li>
+                    </ul>
+                    <div class="camping-delivery-note">
+                        <strong>수령일 안내</strong>
+                        <span>택배는 다음날 도착 기준입니다. 수령희망일이 일요일이거나 연휴 기간이면 캠핑장 대신 거주지에서 받아 가셔야 할 수 있습니다.</span>
+                    </div>
+                </div>
+
+                <form class="camping-order-form" action="/camping-orders" method="POST">
+                    <div class="form-grid">
+                        <label>
+                            <span>주문자 이름</span>
+                            <input type="text" name="customer_name" autocomplete="name" required>
+                        </label>
+                        <label>
+                            <span>연락처</span>
+                            <input type="tel" name="customer_phone" autocomplete="tel" required>
+                        </label>
+                        <label>
+                            <span>이메일</span>
+                            <input type="email" name="customer_email" autocomplete="email" placeholder="선택 입력">
+                        </label>
+                        <label>
+                            <span>수령희망일자</span>
+                            <input type="date" name="requested_receive_date" id="campingReceiveDate" required>
+                        </label>
+                        <label>
+                            <span>인원</span>
+                            <input type="number" name="people_count" min="1" max="30" value="4">
+                        </label>
+                        <label>
+                            <span>세트 수량</span>
+                            <input type="number" name="quantity" min="1" max="20" value="1">
+                        </label>
+                    </div>
+
+                    <fieldset class="destination-fieldset">
+                        <legend>수령지 선택</legend>
+                        <label class="radio-card">
+                            <input type="radio" name="destination_type" value="campground" checked>
+                            <span>캠핑장에서 받기</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="destination_type" value="home">
+                            <span>거주지에서 받아가기</span>
+                        </label>
+                    </fieldset>
+
+                    <div class="campground-fields" id="campgroundFields">
+                        <label>
+                            <span>캠핑장 이름</span>
+                            <input type="text" name="campground_name" id="campgroundName" list="campgroundNames" placeholder="예: 자라섬 캠핑장" required>
+                            <datalist id="campgroundNames">
+                                <% (campgrounds || []).forEach(campground => { %>
+                                    <option value="<%= campground.name %>"><%= campground.address %></option>
+                                <% }) %>
+                            </datalist>
+                        </label>
+                        <label>
+                            <span>캠핑장 주소</span>
+                            <input type="text" name="campground_address" id="campgroundAddress" placeholder="새 캠핑장이면 주소를 입력해주세요" required>
+                        </label>
+                    </div>
+
+                    <div class="home-fields" id="homeFields" hidden>
+                        <label>
+                            <span>거주지 주소</span>
+                            <input type="text" name="home_address" id="homeAddress" placeholder="집에서 받아 캠핑장으로 가져갈 주소">
+                        </label>
+                    </div>
+
+                    <label>
+                        <span>상세주소 / 배송 메모</span>
+                        <input type="text" name="delivery_detail" placeholder="관리동 보관, 입구 택배함, 공동현관 등">
+                    </label>
+
+                    <fieldset class="package-fieldset">
+                        <legend>포함할 구성</legend>
+                        <label><input type="checkbox" name="package_options" value="고기 세트" checked> 고기 세트</label>
+                        <label><input type="checkbox" name="package_options" value="야채 세트" checked> 야채 세트</label>
+                        <label><input type="checkbox" name="package_options" value="캠핑 용품 세트" checked> 캠핑 용품 세트</label>
+                    </fieldset>
+
+                    <label>
+                        <span>요청사항</span>
+                        <textarea name="customer_memo" rows="3" placeholder="고기 두께, 선호 부위, 추가 용품 요청 등을 적어주세요"></textarea>
+                    </label>
+
+                    <div class="camping-warning" id="campingHolidayWarning" hidden>
+                        수령희망일이 일요일 또는 연휴 기간이면 캠핑장 배송보다 거주지 수령을 권장합니다. 판매자가 수령희망일자와 수령지를 다시 확인합니다.
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">비회원 캠핑 주문 접수</button>
+                </form>
+            </section>
         </main>
 
         <aside class="visual-scroll-nav" aria-label="상품 사진 네비게이션">
@@ -125,6 +228,7 @@
 <div class="cart-toast" role="status" aria-live="polite">장바구니에 담았습니다</div>
 
 <script>
+const knownCampgrounds = <%- JSON.stringify(campgrounds || []) %>;
 const visualSections = [...document.querySelectorAll('.product-scroll-section')];
 const floatingVisual = document.getElementById('floatingVisual');
 const floatingLabel = document.getElementById('floatingLabel');
@@ -455,6 +559,48 @@ document.addEventListener('click', (event) => {
         icon.className = 'fas fa-plus';
     }, 1200);
 });
+
+const campgroundNameInput = document.getElementById('campgroundName');
+const campgroundAddressInput = document.getElementById('campgroundAddress');
+const receiveDateInput = document.getElementById('campingReceiveDate');
+const holidayWarning = document.getElementById('campingHolidayWarning');
+const campgroundFields = document.getElementById('campgroundFields');
+const homeFields = document.getElementById('homeFields');
+const homeAddressInput = document.getElementById('homeAddress');
+const holidayDates = new Set([
+    '2026-01-01','2026-02-16','2026-02-17','2026-02-18','2026-03-01','2026-03-02','2026-05-05','2026-05-24','2026-05-25','2026-06-06','2026-08-15','2026-08-17','2026-09-24','2026-09-25','2026-09-26','2026-10-03','2026-10-05','2026-10-09','2026-12-25',
+    '2027-01-01','2027-02-06','2027-02-07','2027-02-08','2027-02-09','2027-03-01','2027-05-05','2027-05-13','2027-06-06','2027-08-15','2027-08-16','2027-09-14','2027-09-15','2027-09-16','2027-10-03','2027-10-04','2027-10-09','2027-10-11','2027-12-25',
+    '2028-01-01','2028-01-26','2028-01-27','2028-01-28','2028-03-01','2028-05-02','2028-05-05','2028-06-06','2028-08-15','2028-10-02','2028-10-03','2028-10-04','2028-10-05','2028-10-09','2028-12-25'
+]);
+
+if (campgroundNameInput && campgroundAddressInput) {
+    campgroundNameInput.addEventListener('change', () => {
+        const match = knownCampgrounds.find(campground => campground.name === campgroundNameInput.value);
+        if (match) campgroundAddressInput.value = match.address;
+    });
+}
+
+document.querySelectorAll('input[name="destination_type"]').forEach(input => {
+    input.addEventListener('change', () => {
+        const useHome = input.value === 'home' && input.checked;
+        campgroundFields.hidden = useHome;
+        homeFields.hidden = !useHome;
+        campgroundNameInput.required = !useHome;
+        campgroundAddressInput.required = !useHome;
+        homeAddressInput.required = useHome;
+    });
+});
+
+if (receiveDateInput && holidayWarning) {
+    receiveDateInput.addEventListener('change', () => {
+        if (!receiveDateInput.value) {
+            holidayWarning.hidden = true;
+            return;
+        }
+        const selected = new Date(`${receiveDateInput.value}T00:00:00+09:00`);
+        holidayWarning.hidden = selected.getDay() !== 0 && !holidayDates.has(receiveDateInput.value);
+    });
+}
 </script>
 
 <style>
@@ -637,6 +783,119 @@ document.addEventListener('click', (event) => {
     text-align: center;
     padding: 40px;
     color: var(--muted);
+}
+.camping-ready-section {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.92fr) minmax(340px, 1.08fr);
+    gap: 18px;
+    padding: 34px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background:
+        linear-gradient(90deg, rgba(255,250,242,0.97), rgba(255,255,255,0.9)),
+        url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85') center/cover;
+}
+.camping-ready-copy h2 {
+    margin: 10px 0;
+    color: var(--green);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.05;
+}
+.camping-ready-copy p,
+.camping-ready-copy li {
+    color: var(--muted);
+    line-height: 1.65;
+}
+.camping-ready-copy ul {
+    padding-left: 18px;
+}
+.camping-delivery-note,
+.camping-warning {
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(143,23,29,0.22);
+    background: #fff4ec;
+    color: var(--primary);
+}
+.camping-delivery-note strong,
+.camping-delivery-note span {
+    display: block;
+}
+.camping-delivery-note span {
+    margin-top: 4px;
+    line-height: 1.55;
+}
+.camping-order-form {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.96);
+}
+.camping-order-form label,
+.camping-order-form fieldset {
+    min-width: 0;
+}
+.camping-order-form label span,
+.camping-order-form legend {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--green);
+    font-weight: 900;
+    font-size: 0.9rem;
+}
+.camping-order-form input,
+.camping-order-form textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+}
+.camping-order-form textarea {
+    resize: vertical;
+}
+.form-grid,
+.campground-fields,
+.home-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+.destination-fieldset,
+.package-fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.radio-card,
+.package-fieldset label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--green);
+    font-weight: 800;
+}
+.radio-card input,
+.package-fieldset input {
+    width: auto;
+    min-height: auto;
+}
+.camping-warning[hidden],
+.campground-fields[hidden],
+.home-fields[hidden] {
+    display: none;
 }
 .visual-scroll-nav {
     position: sticky;
@@ -941,6 +1200,15 @@ document.addEventListener('click', (event) => {
     .bg-alt {
         margin-top: 0;
         padding: 28px 16px 20px;
+    }
+    .camping-ready-section,
+    .form-grid,
+    .campground-fields,
+    .home-fields {
+        grid-template-columns: 1fr;
+    }
+    .camping-ready-section {
+        padding: 24px 16px;
     }
 }
 @media (max-width: 1099px) {

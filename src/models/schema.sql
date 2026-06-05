@@ -106,6 +106,59 @@ CREATE TABLE IF NOT EXISTS passkey_credentials (
     FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS managed_files (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    original_name VARCHAR(255) NOT NULL,
+    stored_name VARCHAR(255) NOT NULL UNIQUE,
+    source_url VARCHAR(1000),
+    mime_type VARCHAR(150),
+    size_bytes BIGINT DEFAULT 0,
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS camping_delivery_locations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(500) NOT NULL,
+    phone VARCHAR(50),
+    memo TEXT,
+    use_count INT DEFAULT 0,
+    last_used_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_camping_location (name, address)
+);
+
+CREATE TABLE IF NOT EXISTS camping_orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(40) NOT NULL UNIQUE,
+    customer_name VARCHAR(100) NOT NULL,
+    customer_phone VARCHAR(30) NOT NULL,
+    customer_email VARCHAR(150),
+    set_name VARCHAR(120) NOT NULL DEFAULT '캠핑준비 주문하면 끝',
+    people_count INT DEFAULT 4,
+    quantity INT DEFAULT 1,
+    requested_receive_date DATE NOT NULL,
+    destination_type ENUM('campground', 'home') NOT NULL,
+    campground_location_id INT,
+    campground_name VARCHAR(255),
+    delivery_address VARCHAR(500) NOT NULL,
+    delivery_detail VARCHAR(255),
+    package_options TEXT,
+    customer_memo TEXT,
+    holiday_warning BOOLEAN DEFAULT FALSE,
+    holiday_warning_reason VARCHAR(500),
+    verification_status ENUM('pending', 'confirmed', 'need_check', 'cancelled') DEFAULT 'pending',
+    seller_memo TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_camping_orders_date (requested_receive_date),
+    INDEX idx_camping_orders_status (verification_status),
+    FOREIGN KEY (campground_location_id) REFERENCES camping_delivery_locations(id) ON DELETE SET NULL
+);
+
 -- Membership Benefits Settings
 CREATE TABLE IF NOT EXISTS membership_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,

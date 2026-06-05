@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const CampingOrder = require('../models/CampingOrder');
 
 function cloneForSection(product, extra = {}) {
     return {
@@ -29,6 +30,7 @@ function sectionItems(products, menuCode, subGroup, subField) {
 exports.list = async (req, res) => {
     try {
         const products = await Product.findCatalogProducts();
+        const campgrounds = await CampingOrder.findCampgrounds();
         const bossPicks = sectionItems(products, 'boss_pick');
         const homeParty = sectionItems(products, 'situation', 'situation', 'theme_category');
         const cookingUse = sectionItems(products, 'cooking_use', 'cooking_use', 'cooking_category');
@@ -43,7 +45,8 @@ exports.list = async (req, res) => {
             title: '상품 둘러보기',
             layout: 'layout',
             sections: { bossPicks, homeParty, family, cookingUse },
-            types: { pork, beef, chicken, etc }
+            types: { pork, beef, chicken, etc },
+            campgrounds
         });
     } catch (err) {
         console.error(err);

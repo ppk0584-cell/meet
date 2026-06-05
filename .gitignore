@@ -6,3 +6,5 @@ npm-debug.log*
 dist/
 build/
 coverage/
+storage/managed-files/*
+!storage/managed-files/.gitkeep

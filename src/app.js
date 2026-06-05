@@ -43,6 +43,7 @@ const recipeController = require('./controllers/recipeController');
 const customerController = require('./controllers/customerController');
 const passkeyController = require('./controllers/passkeyController');
 const shopController = require('./controllers/shopController');
+const campingOrderController = require('./controllers/campingOrderController');
 const multer = require('multer');
 
 // Multer Storage Configuration (for client-side AI analysis)
@@ -63,6 +64,8 @@ const cameraUpload = multer({
 app.get('/ping', (req, res) => res.send('pong'));
 app.use('/', indexRouter);
 app.get('/products', shopController.list);
+app.post('/camping-orders', campingOrderController.create);
+app.get('/camping-orders/:orderNumber', campingOrderController.success);
 app.get('/ai-analysis', aiController.index);
 app.post('/ai-analysis/analyze', upload.single('meatImage'), aiController.analyze);
 app.post('/ai-analysis/analyze-camera', cameraUpload.single('meatImage'), aiController.analyzeCamera);

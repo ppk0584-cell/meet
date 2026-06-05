@@ -1,0 +1,72 @@
+<div class="admin-section-header">
+    <h2>캠핑 주문 확인</h2>
+    <p>비회원 주문의 수령희망일자, 수령지, 일요일/연휴 안내 여부를 재차 검증합니다.</p>
+</div>
+
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>주문번호</th>
+            <th>주문자</th>
+            <th>수령희망일자</th>
+            <th>수령지</th>
+            <th>주소</th>
+            <th>검증상태</th>
+            <th>요청사항</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (orders && orders.length) { %>
+            <% orders.forEach(order => { %>
+                <tr>
+                    <td><strong><%= order.order_number %></strong></td>
+                    <td>
+                        <%= order.customer_name %><br>
+                        <small><%= order.customer_phone %></small>
+                    </td>
+                    <td><%= order.requested_receive_date %></td>
+                    <td>
+                        <%= order.destination_type === 'campground' ? '캠핑장' : '거주지' %>
+                        <% if (order.holiday_warning) { %>
+                            <br><span class="status-badge incoming">재확인 필요</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (order.campground_name) { %>
+                            <strong><%= order.campground_name %></strong><br>
+                        <% } %>
+                        <%= order.delivery_address %>
+                        <% if (order.delivery_detail) { %>
+                            <br><small><%= order.delivery_detail %></small>
+                        <% } %>
+                        <% if (order.holiday_warning_reason) { %>
+                            <br><small class="text-red"><%= order.holiday_warning_reason %></small>
+                        <% } %>
+                    </td>
+                    <td><span class="status-badge <%= order.verification_status === 'need_check' ? 'out' : 'stock' %>"><%= order.verification_status %></span></td>
+                    <td><%= order.customer_memo || '-' %></td>
+                </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="7" class="text-center">접수된 캠핑 주문이 없습니다.</td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+
+<style>
+.admin-section-header {
+    margin-bottom: 18px;
+}
+.admin-section-header h2 {
+    margin-bottom: 6px;
+}
+.admin-section-header p {
+    margin: 0;
+    color: #777;
+}
+.text-red {
+    color: #c0392b;
+}
+</style>
