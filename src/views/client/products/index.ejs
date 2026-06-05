@@ -86,7 +86,7 @@
                     <% }) %>
                 </div>
             </section>
-            <section class="shop-section camping-ready-section" id="camping-ready">
+            <section class="shop-section product-scroll-section camping-ready-section" id="camping-ready" data-visual="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=85" data-title="캠핑준비 주문하면 끝">
                 <div class="camping-ready-copy">
                     <span class="badge accent">CAMPING SET</span>
                     <h2>캠핑준비 주문하면 끝</h2>
@@ -221,6 +221,7 @@
                 <a href="#theme-shop" data-target="theme-shop">상황별 추천</a>
                 <a href="#cooking-use-shop" data-target="cooking-use-shop">요리용도</a>
                 <a href="#family-shop" data-target="family-shop">가족식탁</a>
+                <a href="#camping-ready" data-target="camping-ready">캠핑준비</a>
             </div>
         </aside>
     </div>
@@ -250,7 +251,13 @@ function sectionPhotos(section) {
 function startVisualPhotoRotation(section) {
     clearInterval(visualPhotoTimer);
     const photos = sectionPhotos(section);
-    if (!photos.length) return;
+    if (!photos.length) {
+        if (section?.dataset.visual) {
+            floatingVisual.src = section.dataset.visual;
+            floatingVisual.alt = section.dataset.title || '';
+        }
+        return;
+    }
     visualPhotoIndex = 0;
     floatingVisual.src = photos[0].src;
     floatingVisual.alt = photos[0].alt || section.dataset.title;
@@ -1241,9 +1248,23 @@ if (receiveDateInput && holidayWarning) {
         display: block;
         order: -1;
     }
-    .visual-card,
-    .visual-dots {
+    .visual-card {
         display: none;
+    }
+    .visual-dots {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+    }
+    .visual-dots::-webkit-scrollbar {
+        display: none;
+    }
+    .visual-dots a {
+        flex: 0 0 auto;
+        min-height: 42px;
+        white-space: nowrap;
     }
     .type-symbol-filter {
         display: flex;
