@@ -1,97 +1,262 @@
-<section class="home-app">
-    <div class="home-top">
-        <%- include('partials/brand-spirit-card', { className: 'home-spirit-card brand-spirit-card' }) %>
-        <div class="home-copy">
-            <span class="eyebrow">FRESH MEAT MARKET</span>
-            <h1>오늘 저녁 고기, 고민 없이 고르세요.</h1>
-            <p>소고기, 돼지고기, 닭고기를 상황별로 정리해 바로 고를 수 있게 만든 프레시미트 모바일 매장입니다.</p>
-            <div class="home-actions">
-                <a href="/products" class="btn btn-primary">오늘 상품 보기</a>
-                <a href="/membership/register" class="btn btn-light">단골 등록</a>
-            </div>
-        </div>
-        <div class="deal-ticket">
-            <div class="ticket-logo">
-                <img src="/images/fresh-meat-logo.png" alt="프레시미트">
-            </div>
-            <span>오늘의 추천</span>
-            <strong>구이팩 + 닭갈비 밀키트</strong>
-            <p>가족 식사와 주말 모임에 바로 쓰기 좋은 구성</p>
+<section class="home-hero-simple">
+    <div class="home-hero-copy">
+        <span class="eyebrow">FRESH MEAT, EASY CHOICE</span>
+        <h1>오늘 어떤 메뉴를 해야지, 선택의 고민을 덜어 드립니다.</h1>
+        <p>
+            이곳에서 한 번에 필요한 것을 구매하고,
+            최적의 레시피로 더욱 맛있게 드실 수 있습니다.
+            캠핑용은 주문만 하면 캠핑장 직송의 편리함까지 더했습니다.
+        </p>
+        <div class="home-hero-actions">
+            <a class="btn btn-primary" href="/products">오늘 상품 보기</a>
+            <a class="btn btn-light" href="/products#camping-ready">캠핑 세트 주문</a>
         </div>
     </div>
 
-    <div class="quick-menu">
-        <a href="/products">
-            <i class="fas fa-fire"></i>
-            <span>소고기</span>
-        </a>
-        <a href="/products">
-            <i class="fas fa-bacon"></i>
-            <span>돼지고기</span>
-        </a>
-        <a href="/products">
-            <i class="fas fa-drumstick-bite"></i>
-            <span>닭고기</span>
-        </a>
-        <a href="/membership/register">
-            <i class="fas fa-id-card"></i>
-            <span>단골혜택</span>
-        </a>
+    <div class="home-scene-frame" aria-label="프레시미트 이용 장면">
+        <img class="home-scene is-active" src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=1100&q=88" alt="신선한 고기를 손질하는 장면">
+        <img class="home-scene" src="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1100&q=88" alt="가족들이 고기를 즐겁게 먹는 장면">
+        <img class="home-scene" src="https://images.unsplash.com/photo-1523986371872-9d3ba2e2a389?auto=format&fit=crop&w=1100&q=88" alt="캠핑장에서 고기를 구워 먹는 장면">
+        <div class="home-scene-caption">
+            <strong id="sceneTitle">오늘 손질한 신선함</strong>
+            <span id="sceneText">고기, 야채, 필요한 준비물까지 목적에 맞게 고릅니다.</span>
+        </div>
     </div>
 </section>
 
-<section class="home-section featured-row">
-    <div class="section-title">
-        <span>SELLING POINT</span>
-        <h2>고객이 바로 이해하는 상품 진열</h2>
+<section class="home-menu-strip" aria-label="상품 바로가기">
+    <a href="/products#boss-picks">
+        <i class="fas fa-star"></i>
+        <span>사장추천</span>
+    </a>
+    <a href="/products#theme-shop">
+        <i class="fas fa-question-circle"></i>
+        <span>메뉴고민 해결</span>
+    </a>
+    <a href="/products#cooking-use-shop">
+        <i class="fas fa-utensils"></i>
+        <span>요리용도별</span>
+    </a>
+    <a href="/products#family-shop">
+        <i class="fas fa-users"></i>
+        <span>가족식탁</span>
+    </a>
+    <a href="/products#camping-ready">
+        <i class="fas fa-campground"></i>
+        <span>캠핑직송</span>
+    </a>
+</section>
+
+<section class="home-trust-simple">
+    <div>
+        <i class="fas fa-clipboard-check"></i>
+        <strong>이력과 원산지 확인</strong>
+        <p>고객이 안심할 수 있도록 상품 정보와 수령 정보를 분명하게 남깁니다.</p>
     </div>
-    <div class="feature-cards">
-        <a class="feature-card large" href="/products">
-            <div class="feature-image beef-image"></div>
-            <div>
-                <span>프리미엄</span>
-                <h3>한우 스테이크 큐레이션</h3>
-                <p>굽기 좋은 두께와 인원수 기준으로 추천합니다.</p>
-            </div>
-        </a>
-        <a class="feature-card" href="/products">
-            <div class="feature-image pork-image"></div>
-            <div>
-                <span>실속</span>
-                <h3>삼겹살, 목살 구이팩</h3>
-                <p>주말 장보기용 묶음 구성.</p>
-            </div>
-        </a>
-        <a class="feature-card green-card" href="/products">
-            <div>
-                <span>간편</span>
-                <h3>춘천식 닭갈비 밀키트</h3>
-                <p>손질 닭고기와 양념을 한 팩으로.</p>
-            </div>
-        </a>
+    <div>
+        <i class="fas fa-cut"></i>
+        <strong>용도에 맞춘 손질</strong>
+        <p>구이, 찌개, 캠핑, 가족 식탁처럼 먹는 상황에 맞춰 고르기 쉽게 정리했습니다.</p>
+    </div>
+    <div>
+        <i class="fas fa-truck"></i>
+        <strong>필요한 것을 한 번에</strong>
+        <p>고기와 야채, 캠핑 용품까지 한 번에 주문하고 수령지까지 확인합니다.</p>
     </div>
 </section>
 
-<section class="home-section promise-row">
-    <div class="section-title">
-        <span>WHY FRESH MEAT</span>
-        <h2>처음 보는 고객도 믿게 만드는 정보</h2>
-    </div>
-    <div class="promise-grid">
-        <div>
-            <i class="fas fa-clipboard-check"></i>
-            <strong>이력번호와 원산지</strong>
-            <p>상품 설명에서 신뢰 정보를 먼저 확인할 수 있게 구성했습니다.</p>
-        </div>
-        <div>
-            <i class="fas fa-utensils"></i>
-            <strong>상황별 추천</strong>
-            <p>구이, 집밥, 캠핑, 식단 관리처럼 구매 상황을 기준으로 보여줍니다.</p>
-        </div>
-        <div>
-            <i class="fas fa-gift"></i>
-            <strong>단골 혜택 연결</strong>
-            <p>등록 즉시 포인트와 선호 부위 기반 추천으로 재방문을 유도합니다.</p>
-        </div>
-    </div>
-</section>
+<script>
+const scenes = [
+    {
+        title: '오늘 손질한 신선함',
+        text: '고기, 야채, 필요한 준비물까지 목적에 맞게 고릅니다.'
+    },
+    {
+        title: '가족이 맛있게 먹는 한 끼',
+        text: '무엇을 해 먹을지 고민하지 않도록 메뉴 선택을 돕습니다.'
+    },
+    {
+        title: '캠핑장까지 편하게',
+        text: '캠핑용 세트는 주문만 하면 수령지와 날짜를 확인해 준비합니다.'
+    }
+];
+
+const sceneImages = [...document.querySelectorAll('.home-scene')];
+const sceneTitle = document.getElementById('sceneTitle');
+const sceneText = document.getElementById('sceneText');
+let sceneIndex = 0;
+
+window.setInterval(() => {
+    sceneImages[sceneIndex].classList.remove('is-active');
+    sceneIndex = (sceneIndex + 1) % sceneImages.length;
+    sceneImages[sceneIndex].classList.add('is-active');
+    sceneTitle.textContent = scenes[sceneIndex].title;
+    sceneText.textContent = scenes[sceneIndex].text;
+}, 3600);
+</script>
+
+<style>
+.home-hero-simple {
+    min-height: calc(100vh - 82px);
+    display: grid;
+    grid-template-columns: minmax(320px, 0.92fr) minmax(420px, 1.08fr);
+    gap: clamp(18px, 4vw, 54px);
+    align-items: center;
+    padding: clamp(36px, 6vw, 72px) clamp(18px, 5vw, 72px) 28px;
+    background: #fffaf2;
+}
+.home-hero-copy {
+    max-width: 720px;
+}
+.home-hero-copy h1 {
+    margin: 12px 0 16px;
+    color: var(--green);
+    font-size: clamp(2.35rem, 5.8vw, 5.15rem);
+    line-height: 1.02;
+    letter-spacing: 0;
+}
+.home-hero-copy p {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.6vw, 1.24rem);
+    line-height: 1.78;
+}
+.home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 26px;
+}
+.home-scene-frame {
+    position: relative;
+    min-height: min(620px, calc(100vh - 150px));
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #22120f;
+    box-shadow: 0 24px 70px rgba(66, 42, 18, 0.18);
+}
+.home-scene-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.48));
+}
+.home-scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.035);
+    transition: opacity 0.72s ease, transform 4.2s ease;
+}
+.home-scene.is-active {
+    opacity: 1;
+    transform: scale(1);
+}
+.home-scene-caption {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+    z-index: 2;
+    color: #fff;
+}
+.home-scene-caption strong,
+.home-scene-caption span {
+    display: block;
+}
+.home-scene-caption strong {
+    font-size: clamp(1.35rem, 2.6vw, 2rem);
+    line-height: 1.15;
+}
+.home-scene-caption span {
+    margin-top: 8px;
+    color: rgba(255,255,255,0.84);
+    line-height: 1.55;
+}
+.home-menu-strip {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    padding: 14px clamp(18px, 5vw, 72px);
+    background: #fff;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+.home-menu-strip a {
+    min-height: 88px;
+    display: grid;
+    place-items: center;
+    gap: 7px;
+    padding: 14px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--green);
+    font-weight: 900;
+    text-align: center;
+    transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.home-menu-strip a:hover,
+.home-menu-strip a:focus-visible {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(143, 23, 29, 0.18);
+}
+.home-menu-strip i {
+    font-size: 1.24rem;
+}
+.home-trust-simple {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    padding: 34px clamp(18px, 5vw, 72px) 70px;
+    background: #f8f3ea;
+}
+.home-trust-simple div {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+}
+.home-trust-simple i {
+    color: var(--primary);
+    font-size: 1.35rem;
+}
+.home-trust-simple strong {
+    display: block;
+    margin-top: 14px;
+    color: var(--green);
+    font-size: 1.08rem;
+}
+.home-trust-simple p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+@media (max-width: 900px) {
+    .home-hero-simple {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        padding-top: 30px;
+    }
+    .home-scene-frame {
+        min-height: 390px;
+    }
+    .home-menu-strip {
+        grid-template-columns: repeat(5, minmax(104px, 1fr));
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .home-menu-strip::-webkit-scrollbar {
+        display: none;
+    }
+    .home-trust-simple {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
