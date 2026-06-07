@@ -1,0 +1,200 @@
+<div class="section-card">
+    <div class="flex-between mb-20">
+        <div>
+            <h2>고기 요리 레시피 DB</h2>
+            <p class="muted-text">고기종류, 메뉴명, 재료, 조리방법, 영상 링크, 사진, 섹션분류를 통합 관리합니다.</p>
+        </div>
+        <a href="/recipes" class="btn btn-secondary" target="_blank" rel="noopener">소비자 화면</a>
+    </div>
+
+    <form action="/admin/recipes" method="POST" class="admin-form recipe-form">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="meat_type">고기종류</label>
+                <select id="meat_type" name="meat_type" required>
+                    <% Object.entries(meatTypes).forEach(([code, label]) => { %>
+                        <option value="<%= code %>"><%= label %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="menu_name">메뉴명</label>
+                <input type="text" id="menu_name" name="menu_name" required placeholder="예: 팬시어링 등심 스테이크">
+            </div>
+            <div class="form-group">
+                <label for="video_url">유튜브 영상 링크</label>
+                <input type="url" id="video_url" name="video_url" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <div class="form-group">
+                <label for="image_url">사진 URL</label>
+                <input type="url" id="image_url" name="image_url" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label for="difficulty">난이도</label>
+                <input type="text" id="difficulty" name="difficulty" placeholder="쉬움 / 보통 / 어려움">
+            </div>
+            <div class="form-group">
+                <label for="cooking_time_minutes">조리시간(분)</label>
+                <input type="number" id="cooking_time_minutes" name="cooking_time_minutes" min="0" value="20">
+            </div>
+            <div class="form-group">
+                <label for="serving_count">인분</label>
+                <input type="number" id="serving_count" name="serving_count" min="1" value="2">
+            </div>
+            <div class="form-group">
+                <label for="sort_order">노출 순서</label>
+                <input type="number" id="sort_order" name="sort_order" value="0">
+            </div>
+        </div>
+
+        <fieldset class="section-checkboxes">
+            <legend>섹션분류 중복선택</legend>
+            <% Object.entries(sectionTypes).forEach(([code, label]) => { %>
+                <label>
+                    <input type="checkbox" name="sections" value="<%= code %>">
+                    <span><%= label %></span>
+                </label>
+            <% }) %>
+        </fieldset>
+
+        <div class="form-group">
+            <label for="ingredients">재료</label>
+            <textarea id="ingredients" name="ingredients" rows="5" placeholder="등심 300g&#10;소금 3g&#10;버터 20g"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="cooking_steps">조리방법</label>
+            <textarea id="cooking_steps" name="cooking_steps" rows="7" placeholder="1. 고기를 실온에 둡니다.&#10;2. 팬을 예열합니다."></textarea>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="tags">태그</label>
+                <input type="text" id="tags" name="tags" placeholder="스테이크, 손님상, 캠핑">
+            </div>
+            <div class="form-group">
+                <label for="creator_name">레시피 인물/셰프명</label>
+                <input type="text" id="creator_name" name="creator_name" placeholder="예: 백종원, 성시경, 매장 셰프">
+            </div>
+            <div class="form-group">
+                <label for="restaurant_name">레스토랑명</label>
+                <input type="text" id="restaurant_name" name="restaurant_name" placeholder="예: ○○스테이크하우스">
+            </div>
+            <div class="form-group">
+                <label for="source_name">출처명</label>
+                <input type="text" id="source_name" name="source_name" placeholder="예: 프레시미트 자체 레시피">
+            </div>
+            <div class="form-group">
+                <label for="source_url">출처 URL</label>
+                <input type="url" id="source_url" name="source_url" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="is_active" value="1" checked>
+                    소비자에게 노출
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="memo">관리 메모</label>
+            <textarea id="memo" name="memo" rows="3" placeholder="유튜브 영상 검수 여부, 상품 연결 메모 등"></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> 레시피 등록</button>
+        </div>
+    </form>
+</div>
+
+<div class="section-card">
+    <h2>등록된 레시피</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>순서</th>
+                <th>고기</th>
+                <th>메뉴명</th>
+                <th>섹션</th>
+                <th>영상/사진</th>
+                <th>상태</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (recipes.length) { %>
+                <% recipes.forEach(recipe => { %>
+                    <tr>
+                        <td><%= recipe.sort_order %></td>
+                        <td><%= meatTypes[recipe.meat_type] || recipe.meat_type %></td>
+                        <td>
+                            <strong><%= recipe.menu_name %></strong><br>
+                            <small><%= recipe.difficulty || '-' %> · <%= recipe.cooking_time_minutes || 0 %>분 · <%= recipe.serving_count || 1 %>인분</small>
+                            <% if (recipe.creator_name || recipe.restaurant_name) { %>
+                                <br><small><%= [recipe.creator_name, recipe.restaurant_name].filter(Boolean).join(' · ') %></small>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% recipe.section_codes.forEach(code => { %>
+                                <span class="mini-badge"><%= sectionTypes[code] || code %></span>
+                            <% }) %>
+                        </td>
+                        <td>
+                            <%= recipe.video_url ? '영상' : '-' %> /
+                            <%= recipe.image_url ? '사진' : '-' %>
+                        </td>
+                        <td><span class="status-badge <%= recipe.is_active ? 'stock' : 'out' %>"><%= recipe.is_active ? '노출' : '숨김' %></span></td>
+                        <td>
+                            <form action="/admin/recipes/<%= recipe.id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('이 레시피를 삭제하시겠습니까?')">
+                                <button type="submit" class="btn-icon text-red" style="border:0;background:none;cursor:pointer;"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7" class="text-center">등록된 레시피가 없습니다.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<style>
+.muted-text {
+    margin: 4px 0 0;
+    color: #777;
+}
+.recipe-form {
+    border-top: 1px solid #eee;
+    padding-top: 18px;
+}
+.section-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0;
+    padding: 0;
+    border: 0;
+}
+.section-checkboxes legend {
+    width: 100%;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+.section-checkboxes label,
+.mini-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #e2dccf;
+    border-radius: 999px;
+    padding: 7px 10px;
+    background: #fffaf2;
+    color: #1f4f35;
+    font-weight: 700;
+}
+.mini-badge {
+    margin: 2px;
+    font-size: 0.82rem;
+}
+.text-red {
+    color: #c0392b;
+}
+</style>

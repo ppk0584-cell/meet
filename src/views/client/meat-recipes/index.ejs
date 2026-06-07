@@ -1,0 +1,190 @@
+<section class="recipe-catalog-page">
+    <header class="recipe-catalog-hero">
+        <span class="recipe-tag">MEAT RECIPE LIBRARY</span>
+        <h1>고기 요리 레시피</h1>
+        <p>고기종류, 메뉴, 재료, 조리방법, 영상과 사진을 한곳에 모아 선택의 고민을 줄입니다.</p>
+    </header>
+
+    <div class="recipe-catalog-grid">
+        <% if (recipes.length) { %>
+            <% recipes.forEach(recipe => { %>
+                <article class="recipe-catalog-card">
+                    <% if (recipe.image_url) { %>
+                        <img src="<%= recipe.image_url %>" alt="<%= recipe.menu_name %> 사진">
+                    <% } %>
+                    <div class="recipe-catalog-body">
+                        <span class="recipe-meat-type"><%= meatTypes[recipe.meat_type] || recipe.meat_type %></span>
+                        <h2><%= recipe.menu_name %></h2>
+                        <% if (recipe.creator_name || recipe.restaurant_name) { %>
+                            <p class="recipe-source-line">
+                                <%= [recipe.creator_name, recipe.restaurant_name].filter(Boolean).join(' · ') %>
+                            </p>
+                        <% } %>
+                        <div class="recipe-section-tags">
+                            <% recipe.section_codes.forEach(code => { %>
+                                <span><%= sectionTypes[code] || code %></span>
+                            <% }) %>
+                        </div>
+                        <dl class="recipe-meta-list">
+                            <div><dt>난이도</dt><dd><%= recipe.difficulty || '-' %></dd></div>
+                            <div><dt>시간</dt><dd><%= recipe.cooking_time_minutes || 0 %>분</dd></div>
+                            <div><dt>인분</dt><dd><%= recipe.serving_count || 1 %>인분</dd></div>
+                        </dl>
+                        <details>
+                            <summary>재료 보기</summary>
+                            <p><%- (recipe.ingredients || '등록된 재료가 없습니다.').replace(/\n/g, '<br>') %></p>
+                        </details>
+                        <details>
+                            <summary>조리방법 보기</summary>
+                            <p><%- (recipe.cooking_steps || '등록된 조리방법이 없습니다.').replace(/\n/g, '<br>') %></p>
+                        </details>
+                        <div class="recipe-card-actions">
+                            <% if (recipe.video_url) { %>
+                                <a class="btn btn-primary" href="<%= recipe.video_url %>" target="_blank" rel="noopener">
+                                    <i class="fab fa-youtube"></i> 영상보기
+                                </a>
+                            <% } %>
+                            <% if (recipe.source_url) { %>
+                                <a class="btn btn-light" href="<%= recipe.source_url %>" target="_blank" rel="noopener">출처</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </article>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-recipe">
+                <h2>등록된 레시피가 없습니다.</h2>
+                <p>관리자에서 고기 요리 레시피를 등록해주세요.</p>
+            </div>
+        <% } %>
+    </div>
+</section>
+
+<style>
+.recipe-catalog-page {
+    min-height: 100vh;
+    background: #f8f3ea;
+    padding: 34px clamp(16px, 4vw, 58px) 70px;
+}
+.recipe-catalog-hero {
+    max-width: 1180px;
+    margin: 0 auto 24px;
+}
+.recipe-catalog-hero h1 {
+    margin: 10px 0 8px;
+    color: var(--green);
+    font-size: clamp(2.3rem, 5vw, 4rem);
+    line-height: 1.05;
+}
+.recipe-catalog-hero p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+.recipe-catalog-grid {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+.recipe-catalog-card {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 16px 42px rgba(66, 42, 18, 0.07);
+}
+.recipe-catalog-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+}
+.recipe-catalog-body {
+    padding: 18px;
+}
+.recipe-meat-type {
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.recipe-catalog-body h2 {
+    margin: 8px 0;
+    color: var(--ink);
+    line-height: 1.3;
+}
+.recipe-source-line {
+    margin: 0 0 10px;
+    color: var(--green);
+    font-weight: 800;
+}
+.recipe-section-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+}
+.recipe-section-tags span {
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--green);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+.recipe-meta-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+}
+.recipe-meta-list div {
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--paper);
+}
+.recipe-meta-list dt {
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 900;
+}
+.recipe-meta-list dd {
+    margin: 4px 0 0;
+    color: var(--primary);
+    font-weight: 900;
+}
+.recipe-catalog-body details {
+    border-top: 1px solid var(--line);
+    padding: 12px 0;
+}
+.recipe-catalog-body summary {
+    color: var(--green);
+    font-weight: 900;
+    cursor: pointer;
+}
+.recipe-catalog-body details p {
+    margin: 10px 0 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+.recipe-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+.recipe-card-actions .btn {
+    flex: 1;
+    justify-content: center;
+}
+@media (max-width: 980px) {
+    .recipe-catalog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 640px) {
+    .recipe-catalog-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

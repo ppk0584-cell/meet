@@ -41,6 +41,7 @@ const adminRouter = require('./routes/admin');
 const aiController = require('./controllers/aiController');
 const grillAiController = require('./controllers/grillAiController');
 const recipeController = require('./controllers/recipeController');
+const meatRecipeController = require('./controllers/meatRecipeController');
 const customerController = require('./controllers/customerController');
 const passkeyController = require('./controllers/passkeyController');
 const shopController = require('./controllers/shopController');
@@ -72,6 +73,7 @@ app.post('/ai-analysis/analyze', upload.single('meatImage'), aiController.analyz
 app.post('/ai-analysis/analyze-camera', cameraUpload.single('meatImage'), aiController.analyzeCamera);
 app.get('/grill-ai', grillAiController.index);
 app.post('/grill-ai/analyze-frame', cameraUpload.single('grillFrame'), grillAiController.analyzeFrame);
+app.get('/recipes', meatRecipeController.index);
 app.get('/product/recipe/:productId', recipeController.show);
 
 // Membership Routes

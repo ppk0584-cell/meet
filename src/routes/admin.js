@@ -4,6 +4,7 @@ const adminController = require('../controllers/adminController');
 const productController = require('../controllers/productController');
 const memberController = require('../controllers/memberController');
 const recipeController = require('../controllers/recipeController');
+const meatRecipeController = require('../controllers/meatRecipeController');
 const fileController = require('../controllers/fileController');
 const campingOrderController = require('../controllers/campingOrderController');
 const multer = require('multer');
@@ -41,6 +42,9 @@ router.post('/products/add', productController.create);
 router.get('/products/:productId/recipes', recipeController.adminList);
 router.post('/products/:productId/recipes', recipeController.adminCreate);
 router.post('/products/:productId/recipes/:recipeId/delete', recipeController.adminDelete);
+router.get('/recipes', meatRecipeController.adminList);
+router.post('/recipes', meatRecipeController.adminCreate);
+router.post('/recipes/:recipeId/delete', meatRecipeController.adminDelete);
 
 // Membership Management
 router.get('/members', memberController.list);

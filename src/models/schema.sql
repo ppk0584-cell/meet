@@ -68,6 +68,39 @@ CREATE TABLE IF NOT EXISTS product_recipes (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS meat_recipe_catalog (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    meat_type VARCHAR(50) NOT NULL,
+    menu_name VARCHAR(255) NOT NULL,
+    ingredients TEXT,
+    cooking_steps TEXT,
+    video_url VARCHAR(500),
+    image_url VARCHAR(500),
+    difficulty VARCHAR(50),
+    cooking_time_minutes INT DEFAULT 0,
+    serving_count INT DEFAULT 1,
+    tags VARCHAR(500),
+    creator_name VARCHAR(255),
+    restaurant_name VARCHAR(255),
+    source_name VARCHAR(255),
+    source_url VARCHAR(500),
+    memo TEXT,
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_meat_recipe_type (meat_type),
+    INDEX idx_meat_recipe_active (is_active)
+);
+
+CREATE TABLE IF NOT EXISTS meat_recipe_sections (
+    recipe_id INT NOT NULL,
+    section_code VARCHAR(80) NOT NULL,
+    PRIMARY KEY (recipe_id, section_code),
+    INDEX idx_meat_recipe_section (section_code),
+    FOREIGN KEY (recipe_id) REFERENCES meat_recipe_catalog(id) ON DELETE CASCADE
+);
+
 -- Members Table
 CREATE TABLE IF NOT EXISTS members (
     id INT AUTO_INCREMENT PRIMARY KEY,
