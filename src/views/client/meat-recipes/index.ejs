@@ -8,7 +8,7 @@
     <div class="recipe-catalog-grid">
         <% if (recipes.length) { %>
             <% recipes.forEach(recipe => { %>
-                <article class="recipe-catalog-card">
+                <article class="recipe-catalog-card" id="recipe-<%= recipe.id %>">
                     <% if (recipe.image_url) { %>
                         <img src="<%= recipe.image_url %>" alt="<%= recipe.menu_name %> 사진">
                     <% } %>

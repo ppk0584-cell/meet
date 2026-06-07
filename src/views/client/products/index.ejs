@@ -16,9 +16,12 @@
                     <p>입고 상태와 판매 반응이 좋은 상품만 앞에 배치했습니다.</p>
                 </div>
                 <div class="product-grid">
-                    <% if (sections.bossPicks.length > 0) { %>
+                    <% if (sections.bossPicks.length > 0 || sections.recipeSections.bossPicks.length > 0) { %>
                         <% sections.bossPicks.forEach(product => { %>
                             <%- include('card', { product }) %>
+                        <% }) %>
+                        <% sections.recipeSections.bossPicks.forEach(recipe => { %>
+                            <%- include('recipe-card', { recipe, meatTypes }) %>
                         <% }) %>
                     <% } else { %>
                         <div class="empty-state">추천 메뉴를 준비 중입니다.</div>
@@ -42,6 +45,9 @@
                     <% sections.homeParty.forEach(product => { %>
                         <%- include('card', { product }) %>
                     <% }) %>
+                    <% sections.recipeSections.situation.forEach(recipe => { %>
+                        <%- include('recipe-card', { recipe, meatTypes }) %>
+                    <% }) %>
                 </div>
             </section>
 
@@ -61,6 +67,9 @@
                 <div class="product-grid">
                     <% sections.cookingUse.forEach(product => { %>
                         <%- include('card', { product }) %>
+                    <% }) %>
+                    <% sections.recipeSections.cookingUse.forEach(recipe => { %>
+                        <%- include('recipe-card', { recipe, meatTypes }) %>
                     <% }) %>
                 </div>
             </section>
@@ -82,6 +91,11 @@
                     <% sections.family.forEach(product => { %>
                         <div class="family-product" data-family="<%= product.family_category || 'mixed' %>">
                             <%- include('card', { product }) %>
+                        </div>
+                    <% }) %>
+                    <% sections.recipeSections.family.forEach(recipe => { %>
+                        <div class="family-product" data-family="<%= recipe.family_category || 'happy_table' %>">
+                            <%- include('recipe-card', { recipe, meatTypes }) %>
                         </div>
                     <% }) %>
                 </div>
@@ -219,6 +233,9 @@
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
+                        <% sections.recipeSections.camping.forEach(recipe => { %>
+                            <%- include('recipe-card', { recipe, meatTypes }) %>
+                        <% }) %>
                     </div>
 
                 </div>
@@ -1036,6 +1053,19 @@ if (receiveDateInput && holidayWarning) {
 }
 .family-product {
     min-width: 0;
+}
+.recipe-product-card {
+    min-width: 0;
+}
+.recipe-source-text {
+    min-height: 1.4em;
+    margin: -2px 0 10px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+.recipe-card-footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .theme-tab {
     min-height: 42px;

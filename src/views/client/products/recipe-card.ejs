@@ -1,0 +1,29 @@
+<article class="product-card recipe-product-card"
+    data-category="<%= recipe.meat_type %>"
+    data-theme="<%= recipe.theme_category || '' %>"
+    data-family="<%= recipe.family_category || '' %>"
+    data-cooking="<%= recipe.cooking_category || '' %>">
+    <div class="card-image">
+        <img src="<%= recipe.image_url || '/images/fresh-meat-logo.png' %>" alt="<%= recipe.menu_name %> 사진">
+        <div class="tag-ribbon family"><%= recipe.recipe_section_label || '레시피' %></div>
+    </div>
+    <div class="card-body">
+        <span class="product-kicker"><%= meatTypes[recipe.meat_type] || recipe.meat_type %> RECIPE</span>
+        <h3 class="product-name"><%= recipe.menu_name %></h3>
+        <% if (recipe.creator_name || recipe.restaurant_name || recipe.source_name) { %>
+            <p class="recipe-source-text"><%= [recipe.creator_name, recipe.restaurant_name, recipe.source_name].filter(Boolean).join(' · ') %></p>
+        <% } %>
+        <p class="product-desc"><%= (recipe.ingredients || '재료 정보 확인 필요').split('\n')[0] %></p>
+        <p class="product-meta">
+            <%= recipe.cooking_time_minutes ? `${recipe.cooking_time_minutes}분` : '영상 확인' %>
+            · <%= recipe.serving_count || 1 %>인분
+            · <%= recipe.difficulty || '난이도 확인' %>
+        </p>
+        <div class="card-footer recipe-card-footer">
+            <a class="btn btn-sm btn-light" href="/recipes#recipe-<%= recipe.id %>">상세</a>
+            <% if (recipe.video_url) { %>
+                <a class="btn btn-sm btn-recipe" href="<%= recipe.video_url %>" target="_blank" rel="noopener">영상</a>
+            <% } %>
+        </div>
+    </div>
+</article>
