@@ -318,13 +318,18 @@
         </main>
 
         <aside class="visual-scroll-nav" aria-label="상품 사진 네비게이션">
-            <div class="camping-cart-panel">
-                <h3>장바구니</h3>
-                <p>전 상품을 담은 뒤 한 번에 주문 정보를 입력해주세요.</p>
-                <ul id="campingCartList" class="camping-cart-list">
-                    <li class="empty">아직 담은 상품이 없습니다.</li>
-                </ul>
-                <button type="button" class="btn btn-light" id="campingOrderToggle" disabled>주문 정보 입력</button>
+            <div class="camping-cart-panel" id="shoppingCartPanel">
+                <button type="button" class="cart-summary-toggle" id="campingCartSummary" aria-expanded="false" aria-controls="campingCartDetails">
+                    <span>장바구니</span>
+                    <strong id="campingCartCount">0개</strong>
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="cart-details" id="campingCartDetails" hidden>
+                    <ul id="campingCartList" class="camping-cart-list">
+                        <li class="empty">아직 담은 상품이 없습니다.</li>
+                    </ul>
+                    <button type="button" class="btn btn-light" id="campingOrderToggle" disabled>주문 정보 입력</button>
+                </div>
             </div>
             <div class="type-symbol-filter" aria-label="고기 종류 필터">
                 <button type="button" data-type="all" title="전체"><span class="type-symbol all" aria-hidden="true">ALL</span></button>
@@ -702,6 +707,10 @@ function showCartAddedFeedback(button) {
 }
 
 const shoppingCart = [];
+const shoppingCartPanel = document.getElementById('shoppingCartPanel');
+const campingCartSummary = document.getElementById('campingCartSummary');
+const campingCartCount = document.getElementById('campingCartCount');
+const campingCartDetails = document.getElementById('campingCartDetails');
 const campingCartList = document.getElementById('campingCartList');
 const campingOrderToggle = document.getElementById('campingOrderToggle');
 const campingOrderForm = document.getElementById('campingOrderForm');
@@ -710,6 +719,7 @@ const destinationFieldset = document.getElementById('destinationFieldset');
 
 function renderCampingCart() {
     if (!campingCartList || !campingOrderToggle || !campingPackageOptions) return;
+    if (campingCartCount) campingCartCount.textContent = `${shoppingCart.length}개`;
     campingCartList.innerHTML = '';
     if (!shoppingCart.length) {
         const emptyItem = document.createElement('li');
@@ -739,6 +749,13 @@ function renderCampingCart() {
     syncDestinationControls();
 }
 
+function setCartExpanded(expanded) {
+    if (!campingCartSummary || !campingCartDetails) return;
+    campingCartSummary.setAttribute('aria-expanded', String(expanded));
+    campingCartDetails.hidden = !expanded;
+    shoppingCartPanel?.classList.toggle('is-expanded', expanded);
+}
+
 function addToShoppingCart(item) {
     if (!item?.label) return;
     if (!shoppingCart.some(cartItem => cartItem.label === item.label)) shoppingCart.push(item);
@@ -746,6 +763,12 @@ function addToShoppingCart(item) {
 }
 
 document.addEventListener('click', (event) => {
+    const summaryButton = event.target.closest('#campingCartSummary');
+    if (summaryButton) {
+        setCartExpanded(summaryButton.getAttribute('aria-expanded') !== 'true');
+        return;
+    }
+
     const generalButton = event.target.closest('.cart-button');
     if (generalButton) {
         const card = generalButton.closest('.product-card');
@@ -1092,13 +1115,11 @@ if (receiveDateInput && holidayWarning) {
     flex: 1;
     flex-direction: column;
 }
-.camping-product-card h3,
-.camping-cart-panel h3 {
+.camping-product-card h3 {
     margin: 7px 0 8px;
     color: var(--green);
 }
-.camping-product-card p,
-.camping-cart-panel p {
+.camping-product-card p {
     color: var(--muted);
     line-height: 1.55;
 }
@@ -1118,18 +1139,48 @@ if (receiveDateInput && holidayWarning) {
 }
 .camping-cart-panel {
     margin-bottom: 12px;
-    padding: 14px;
+    padding: 8px;
 }
-.camping-cart-panel h3 {
-    font-size: 1rem;
+.cart-summary-toggle {
+    width: 100%;
+    min-height: 44px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--green);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 900;
+    text-align: left;
 }
-.camping-cart-panel p {
-    font-size: 0.88rem;
+.cart-summary-toggle span,
+.cart-summary-toggle strong {
+    padding: 0 8px;
+}
+.cart-summary-toggle strong {
+    color: var(--primary);
+}
+.cart-summary-toggle i {
+    padding-right: 8px;
+    transition: transform 0.18s ease;
+}
+.camping-cart-panel.is-expanded .cart-summary-toggle i {
+    transform: rotate(180deg);
+}
+.cart-details {
+    max-height: min(28vh, 220px);
+    overflow: auto;
+    padding: 8px 2px 2px;
+    scrollbar-width: thin;
 }
 .camping-cart-list {
     display: grid;
     gap: 8px;
-    margin: 14px 0;
+    margin: 0 0 8px;
     padding: 0;
     list-style: none;
 }
@@ -1312,6 +1363,9 @@ if (receiveDateInput && holidayWarning) {
     align-self: start;
     width: 220px;
     justify-self: end;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    scrollbar-width: thin;
 }
 .type-symbol-filter {
     display: grid;
@@ -1468,7 +1522,7 @@ if (receiveDateInput && holidayWarning) {
 }
 .visual-card img {
     width: 100%;
-    aspect-ratio: 2.8 / 4;
+    height: 148px;
     object-fit: cover;
     display: block;
 }
@@ -1487,8 +1541,9 @@ if (receiveDateInput && holidayWarning) {
 }
 .visual-card span {
     display: block;
-    padding: 14px;
+    padding: 9px 10px;
     color: var(--green);
+    font-size: 0.88rem;
     font-weight: 800;
 }
 .product-scroll-section.is-filtering .product-card:not(.carousel-clone) {
