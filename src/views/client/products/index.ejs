@@ -909,7 +909,7 @@ if (receiveDateInput && holidayWarning) {
     min-width: 0;
 }
 .shop-main-sections > .product-scroll-section > .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 240px));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     justify-content: start;
 }
 .product-grid.is-carousel {
@@ -1572,6 +1572,9 @@ if (receiveDateInput && holidayWarning) {
     .family-product-grid {
         grid-template-columns: 1fr;
     }
+    .shop-main-sections > .product-scroll-section > .product-grid {
+        grid-template-columns: 1fr;
+    }
     .product-grid.is-carousel > .product-card,
     .product-grid.is-carousel > .family-product {
         flex-basis: min(82vw, 320px);
@@ -1599,6 +1602,9 @@ if (receiveDateInput && holidayWarning) {
     .shop-scroll-layout {
         grid-template-columns: 1fr;
         padding: 0;
+    }
+    .shop-main-sections > .product-scroll-section > .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .market-belief,
     .visual-scroll-nav {
@@ -1657,6 +1663,9 @@ if (receiveDateInput && holidayWarning) {
     }
 }
 @media (max-width: 820px) {
+    .shop-main-sections > .product-scroll-section > .product-grid {
+        grid-template-columns: 1fr;
+    }
     .market-belief {
         display: block;
     }
