@@ -1,4 +1,4 @@
-<div class="product-card" data-category="<%= product.category %>" data-theme="<%= product.theme_category || '' %>" data-family="<%= product.family_category || '' %>" data-cooking="<%= product.cooking_category || '' %>">
+<div class="product-card" data-category="<%= product.category %>" data-theme="<%= product.theme_category || '' %>" data-family="<%= product.family_category || '' %>" data-cooking="<%= product.cooking_category || '' %>" data-cart-name="<%= product.name %>" data-cart-price="<%= product.price.toLocaleString() %>원 / 100g">
     <div class="card-image">
         <img src="<%= product.image_url || '/images/fresh-meat-logo.png' %>" alt="<%= product.name %>">
         <% if (product.usage_category === 'boss_pick') { %>
