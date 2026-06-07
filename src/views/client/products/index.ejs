@@ -136,6 +136,78 @@
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
+                        <article class="camping-product-card" data-camping-option="삼겹살 단품">
+                            <img src="https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?auto=format&fit=crop&w=700&q=85" alt="삼겹살 단품">
+                            <div>
+                                <span class="product-kicker">PORK</span>
+                                <h3>삼겹살</h3>
+                                <p>숯불에 기름이 돌며 고소하게 익는 캠핑 기본 구이용입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="목살 단품">
+                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=85" alt="목살 단품">
+                            <div>
+                                <span class="product-kicker">PORK</span>
+                                <h3>목살</h3>
+                                <p>두툼하게 구워도 담백하고 씹는 맛이 좋은 캠핑용 부위입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="소 토마호크 단품">
+                            <img src="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=700&q=85" alt="소 토마호크 단품">
+                            <div>
+                                <span class="product-kicker">BEEF TOMAHAWK</span>
+                                <h3>토마호크 - 소</h3>
+                                <p>캠핑장 메인 요리로 어울리는 묵직한 소고기 구이입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="돼지 토마호크 단품">
+                            <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=700&q=85" alt="돼지 토마호크 단품">
+                            <div>
+                                <span class="product-kicker">PORK TOMAHAWK</span>
+                                <h3>토마호크 - 돼지</h3>
+                                <p>뼈대가 살아 있어 보기 좋고 굽기 쉬운 돼지고기 캠핑 메뉴입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="안심 단품">
+                            <img src="https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=700&q=85" alt="안심 단품">
+                            <div>
+                                <span class="product-kicker">TENDERLOIN</span>
+                                <h3>안심</h3>
+                                <p>부드럽게 먹고 싶은 분들을 위한 고급 구이용 단품입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="등심 단품">
+                            <img src="https://images.unsplash.com/photo-1551028150-64b9f398f678?auto=format&fit=crop&w=700&q=85" alt="등심 단품">
+                            <div>
+                                <span class="product-kicker">SIRLOIN</span>
+                                <h3>등심</h3>
+                                <p>풍미와 식감의 균형이 좋아 가족 캠핑 구이에 잘 맞습니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="숯 단품">
+                            <img src="https://images.unsplash.com/photo-1508357941501-0924cf312bbd?auto=format&fit=crop&w=700&q=85" alt="숯 단품">
+                            <div>
+                                <span class="product-kicker">CHARCOAL</span>
+                                <h3>숯</h3>
+                                <p>고기와 함께 준비하면 장보기 동선이 줄어드는 캠핑 필수품입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="대표 쌈 야채 단품">
+                            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=700&q=85" alt="대표 쌈 야채 단품">
+                            <div>
+                                <span class="product-kicker">SSAM VEGETABLE</span>
+                                <h3>대표 쌈 야채</h3>
+                                <p>상추, 깻잎 등 고기와 같이 먹기 좋은 기본 쌈 야채입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
                     </div>
 
                     <div class="camping-cart-panel">
@@ -908,7 +980,7 @@ if (receiveDateInput && holidayWarning) {
 }
 .camping-product-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 14px;
 }
 .camping-product-card,
