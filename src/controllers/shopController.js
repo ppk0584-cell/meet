@@ -32,7 +32,8 @@ exports.list = async (req, res) => {
         const products = await Product.findCatalogProducts();
         const campgrounds = await CampingOrder.findCampgrounds();
         const bossPicks = sectionItems(products, 'boss_pick');
-        const homeParty = sectionItems(products, 'situation', 'situation', 'theme_category');
+        const homeParty = sectionItems(products, 'situation', 'situation', 'theme_category')
+            .filter(product => product.theme_category !== 'camping');
         const cookingUse = sectionItems(products, 'cooking_use', 'cooking_use', 'cooking_category');
         const family = sectionItems(products, 'family_table', 'family_table', 'family_category');
 

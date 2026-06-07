@@ -87,6 +87,11 @@
                 </div>
             </section>
             <section class="shop-section product-scroll-section camping-ready-section" id="camping-ready" data-visual="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=85" data-title="캠핑준비 주문하면 끝">
+                <div class="section-header camping-section-header">
+                    <span class="badge accent">CAMPING SET</span>
+                    <h2>캠핑준비 주문하면 끝</h2>
+                    <p>사진을 보며 필요한 캠핑 세트를 장바구니에 담고, 마지막에 수령일과 수령지를 확인해 주문합니다.</p>
+                </div>
                 <div class="camping-ready-copy">
                     <span class="badge accent">CAMPING SET</span>
                     <h2>캠핑준비 주문하면 끝</h2>
@@ -102,7 +107,49 @@
                     </div>
                 </div>
 
-                <form class="camping-order-form" action="/camping-orders" method="POST">
+                <div class="camping-shop-layout">
+                    <div class="camping-product-grid">
+                        <article class="camping-product-card" data-camping-option="바비큐 고기 세트">
+                            <img src="https://images.unsplash.com/photo-1551028150-64b9f398f678?auto=format&fit=crop&w=700&q=85" alt="바비큐 고기 세트">
+                            <div>
+                                <span class="product-kicker">MEAT SET</span>
+                                <h3>바비큐 고기 세트</h3>
+                                <p>삼겹살, 목살, 소고기 구이용을 인원에 맞춰 구성합니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="쌈채소 야채 세트">
+                            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=700&q=85" alt="쌈채소 야채 세트">
+                            <div>
+                                <span class="product-kicker">VEGETABLE SET</span>
+                                <h3>쌈채소 야채 세트</h3>
+                                <p>쌈채소, 마늘, 고추, 버섯 등 고기와 같이 먹기 좋은 구성입니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                        <article class="camping-product-card" data-camping-option="캠핑 식사용품 세트">
+                            <img src="https://images.unsplash.com/photo-1523986371872-9d3ba2e2a389?auto=format&fit=crop&w=700&q=85" alt="캠핑 식사용품 세트">
+                            <div>
+                                <span class="product-kicker">CAMPING GOODS</span>
+                                <h3>캠핑 식사용품 세트</h3>
+                                <p>집게, 위생장갑, 일회용 접시, 간단 소모품을 함께 준비합니다.</p>
+                                <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="camping-cart-panel">
+                        <h3>캠핑 장바구니</h3>
+                        <p>필요한 세트를 담은 뒤 주문 정보를 입력해주세요.</p>
+                        <ul id="campingCartList" class="camping-cart-list">
+                            <li class="empty">아직 담은 캠핑 세트가 없습니다.</li>
+                        </ul>
+                        <button type="button" class="btn btn-light" id="campingOrderToggle" disabled>주문 정보 입력</button>
+                    </div>
+                </div>
+
+                <form class="camping-order-form" id="campingOrderForm" action="/camping-orders" method="POST" hidden>
+                    <input type="hidden" name="package_options" id="campingPackageOptions" value="">
                     <div class="form-grid">
                         <label>
                             <span>주문자 이름</span>
@@ -169,13 +216,6 @@
                         <span>상세주소 / 배송 메모</span>
                         <input type="text" name="delivery_detail" placeholder="관리동 보관, 입구 택배함, 공동현관 등">
                     </label>
-
-                    <fieldset class="package-fieldset">
-                        <legend>포함할 구성</legend>
-                        <label><input type="checkbox" name="package_options" value="고기 세트" checked> 고기 세트</label>
-                        <label><input type="checkbox" name="package_options" value="야채 세트" checked> 야채 세트</label>
-                        <label><input type="checkbox" name="package_options" value="캠핑 용품 세트" checked> 캠핑 용품 세트</label>
-                    </fieldset>
 
                     <label>
                         <span>요청사항</span>
@@ -567,6 +607,60 @@ document.addEventListener('click', (event) => {
     }, 1200);
 });
 
+const campingCart = [];
+const campingCartList = document.getElementById('campingCartList');
+const campingOrderToggle = document.getElementById('campingOrderToggle');
+const campingOrderForm = document.getElementById('campingOrderForm');
+const campingPackageOptions = document.getElementById('campingPackageOptions');
+
+function renderCampingCart() {
+    if (!campingCartList || !campingOrderToggle || !campingPackageOptions) return;
+    campingCartList.innerHTML = '';
+    if (!campingCart.length) {
+        const emptyItem = document.createElement('li');
+        emptyItem.className = 'empty';
+        emptyItem.textContent = '아직 담은 캠핑 세트가 없습니다.';
+        campingCartList.appendChild(emptyItem);
+        campingOrderToggle.disabled = true;
+        campingPackageOptions.value = '';
+        if (campingOrderForm) campingOrderForm.hidden = true;
+        return;
+    }
+    campingCart.forEach((item, index) => {
+        const row = document.createElement('li');
+        row.innerHTML = `<span>${item}</span><button type="button" data-remove-camping="${index}" aria-label="${item} 삭제">삭제</button>`;
+        campingCartList.appendChild(row);
+    });
+    campingOrderToggle.disabled = false;
+    campingPackageOptions.value = campingCart.join(', ');
+}
+
+document.addEventListener('click', (event) => {
+    const addButton = event.target.closest('.camping-cart-button');
+    if (addButton) {
+        const card = addButton.closest('.camping-product-card');
+        const option = card?.dataset.campingOption;
+        if (option && !campingCart.includes(option)) campingCart.push(option);
+        addButton.textContent = '담김';
+        addButton.classList.add('is-added');
+        renderCampingCart();
+        return;
+    }
+
+    const removeButton = event.target.closest('[data-remove-camping]');
+    if (removeButton) {
+        campingCart.splice(Number(removeButton.dataset.removeCamping), 1);
+        renderCampingCart();
+    }
+});
+
+if (campingOrderToggle && campingOrderForm) {
+    campingOrderToggle.addEventListener('click', () => {
+        campingOrderForm.hidden = false;
+        campingOrderForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+}
+
 const campgroundNameInput = document.getElementById('campgroundName');
 const campgroundAddressInput = document.getElementById('campgroundAddress');
 const receiveDateInput = document.getElementById('campingReceiveDate');
@@ -792,15 +886,110 @@ if (receiveDateInput && holidayWarning) {
     color: var(--muted);
 }
 .camping-ready-section {
-    display: grid;
-    grid-template-columns: minmax(280px, 0.92fr) minmax(340px, 1.08fr);
-    gap: 18px;
     padding: 34px;
     border: 1px solid var(--line);
     border-radius: 8px;
     background:
         linear-gradient(90deg, rgba(255,250,242,0.97), rgba(255,255,255,0.9)),
         url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85') center/cover;
+}
+.theme-tab[data-theme="camping"],
+.camping-ready-copy {
+    display: none;
+}
+.camping-section-header {
+    max-width: 760px;
+}
+.camping-shop-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 16px;
+    align-items: start;
+}
+.camping-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+.camping-product-card,
+.camping-cart-panel {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 12px 34px rgba(66, 42, 18, 0.08);
+}
+.camping-product-card {
+    overflow: hidden;
+}
+.camping-product-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+.camping-product-card > div {
+    padding: 16px;
+}
+.camping-product-card h3,
+.camping-cart-panel h3 {
+    margin: 7px 0 8px;
+    color: var(--green);
+}
+.camping-product-card p,
+.camping-cart-panel p {
+    color: var(--muted);
+    line-height: 1.55;
+}
+.camping-product-card .btn {
+    width: 100%;
+    margin-top: 8px;
+}
+.camping-cart-panel {
+    position: sticky;
+    top: 104px;
+    padding: 16px;
+}
+.camping-cart-list {
+    display: grid;
+    gap: 8px;
+    margin: 14px 0;
+    padding: 0;
+    list-style: none;
+}
+.camping-cart-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--green);
+    font-weight: 800;
+}
+.camping-cart-list li.empty {
+    color: var(--muted);
+    font-weight: 700;
+}
+.camping-cart-list button {
+    border: 0;
+    background: transparent;
+    color: var(--primary);
+    font-weight: 900;
+    cursor: pointer;
+}
+.camping-cart-panel .btn {
+    width: 100%;
+}
+.camping-cart-panel .btn:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+}
+.camping-order-form[hidden] {
+    display: none;
+}
+.camping-order-form {
+    margin-top: 18px;
 }
 .camping-ready-copy h2 {
     margin: 10px 0;
@@ -1216,6 +1405,13 @@ if (receiveDateInput && holidayWarning) {
     }
     .camping-ready-section {
         padding: 24px 16px;
+    }
+    .camping-shop-layout,
+    .camping-product-grid {
+        grid-template-columns: 1fr;
+    }
+    .camping-cart-panel {
+        position: static;
     }
 }
 @media (max-width: 1099px) {
