@@ -179,6 +179,12 @@ class MeatRecipe {
         return rows[0] || null;
     }
 
+    static async activateAll() {
+        await this.ensureSchema();
+        const [result] = await pool.query('UPDATE meat_recipe_catalog SET is_active = 1 WHERE is_active = 0');
+        return result.affectedRows || 0;
+    }
+
     static async ensureTablesOnly() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS meat_recipe_catalog (

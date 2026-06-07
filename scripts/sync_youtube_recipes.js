@@ -73,7 +73,7 @@ async function importVideo(job, item) {
         source_name: snippet.channelTitle || 'YouTube',
         source_url: link,
         memo: `YouTube API 후보 수집: ${job.query}`,
-        is_active: 0
+        is_active: 1
     });
     return true;
 }
@@ -90,7 +90,8 @@ async function main() {
             else skipped += 1;
         }
     }
-    console.log(JSON.stringify({ created, skipped, jobs: SEARCH_JOBS.length }, null, 2));
+    const activated = await MeatRecipe.activateAll();
+    console.log(JSON.stringify({ created, skipped, activated, jobs: SEARCH_JOBS.length }, null, 2));
     process.exit(0);
 }
 
