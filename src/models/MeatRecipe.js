@@ -109,6 +109,7 @@ class MeatRecipe {
             )
         `);
         await this.seedDefaults();
+        await this.activateDefaultRecipesIfNeeded();
     }
 
     static normalizeSections(sections) {
@@ -162,7 +163,7 @@ class MeatRecipe {
                 data.source_url || '',
                 data.memo || '',
                 Number(data.sort_order || 0),
-                data.is_active ? 1 : 0
+                data.is_active === undefined ? 1 : data.is_active ? 1 : 0
             ]
         );
         await this.replaceSections(result.insertId, sections);
@@ -212,6 +213,19 @@ class MeatRecipe {
                 [recipeId, section]
             );
         }
+    }
+
+    static async activateDefaultRecipesIfNeeded() {
+        const [activeRows] = await pool.query('SELECT COUNT(*) AS count FROM meat_recipe_catalog WHERE is_active = 1');
+        if (activeRows[0].count) return;
+        const names = DEFAULT_RECIPES.map(recipe => recipe.menu_name);
+        if (!names.length) return;
+        await pool.query(
+            `UPDATE meat_recipe_catalog
+             SET is_active = 1
+             WHERE menu_name IN (${names.map(() => '?').join(',')})`,
+            names
+        );
     }
 
     static async findAll({ includeInactive = false } = {}) {
