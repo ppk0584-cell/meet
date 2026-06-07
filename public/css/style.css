@@ -1011,4 +1011,8 @@ footer {
     .quality-grid {
         padding-bottom: 46px;
     }
+
+    .brand-spirit-card img {
+        display: none;
+    }
 }
