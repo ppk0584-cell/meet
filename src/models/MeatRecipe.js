@@ -170,6 +170,15 @@ class MeatRecipe {
         return result.insertId;
     }
 
+    static async findByVideoUrl(videoUrl) {
+        await this.ensureSchema();
+        const [rows] = await pool.query(
+            'SELECT id FROM meat_recipe_catalog WHERE video_url = ? LIMIT 1',
+            [videoUrl || '']
+        );
+        return rows[0] || null;
+    }
+
     static async ensureTablesOnly() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS meat_recipe_catalog (
