@@ -39,6 +39,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const aiController = require('./controllers/aiController');
+const grillAiController = require('./controllers/grillAiController');
 const recipeController = require('./controllers/recipeController');
 const customerController = require('./controllers/customerController');
 const passkeyController = require('./controllers/passkeyController');
@@ -69,6 +70,8 @@ app.get('/camping-orders/:orderNumber', campingOrderController.success);
 app.get('/ai-analysis', aiController.index);
 app.post('/ai-analysis/analyze', upload.single('meatImage'), aiController.analyze);
 app.post('/ai-analysis/analyze-camera', cameraUpload.single('meatImage'), aiController.analyzeCamera);
+app.get('/grill-ai', grillAiController.index);
+app.post('/grill-ai/analyze-frame', cameraUpload.single('grillFrame'), grillAiController.analyzeFrame);
 app.get('/product/recipe/:productId', recipeController.show);
 
 // Membership Routes

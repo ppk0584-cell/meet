@@ -1,0 +1,551 @@
+<section class="grill-ai-page">
+    <div class="grill-hero">
+        <span class="eyebrow">LIVE GRILL ASSISTANT</span>
+        <h1>고기가 익는 순간을 보고 뒤집을 때를 알려드립니다.</h1>
+        <p>입력값 없이 1초 단위 프레임을 임시 분석합니다. 사진은 서버에 저장하지 않고, 고기 하단 테두리와 측면 익힘을 중심으로 판단합니다.</p>
+    </div>
+
+    <div class="grill-workspace">
+        <div class="grill-camera-card">
+            <div class="grill-stage">
+                <video id="grillVideo" autoplay playsinline muted></video>
+                <canvas id="grillCanvas"></canvas>
+                <div class="scan-area edge-focus" aria-hidden="true">
+                    <span></span>
+                    <b class="edge-left"></b>
+                    <b class="edge-right"></b>
+                    <b class="edge-bottom"></b>
+                </div>
+                <div id="flipOverlay" class="flip-overlay" hidden>
+                    <strong id="flipOverlayText">지금 뒤집으세요</strong>
+                    <span id="flipOverlayReason">표면 갈변이 충분합니다.</span>
+                </div>
+                <div id="grillPlaceholder" class="grill-placeholder">
+                    <i class="fas fa-fire-burner"></i>
+                    <strong>카메라를 그릴 위 고기에 맞춰주세요.</strong>
+                    <span>시작하면 자동으로 프레임을 읽고 뒤집기 타이밍을 안내합니다.</span>
+                </div>
+            </div>
+
+            <div class="grill-actions">
+                <button type="button" id="startGrillAi" class="primary-action">
+                    <i class="fas fa-play"></i> AI 굽기 시작
+                </button>
+                <button type="button" id="stopGrillAi" class="secondary-action" disabled>
+                    <i class="fas fa-stop"></i> 정지
+                </button>
+                <button type="button" id="toggleVoice" class="secondary-action is-on">
+                    <i class="fas fa-volume-high"></i> 음성 켜짐
+                </button>
+            </div>
+        </div>
+
+        <aside class="grill-status-panel">
+            <span class="result-label">실시간 판단</span>
+            <h2 id="grillStatusTitle">대기 중</h2>
+            <div id="grillMessage" class="grill-message">카메라를 시작하면 1초 단위 시각 신호와 4초 단위 AI 확인을 함께 사용합니다.</div>
+
+            <div class="signal-grid" aria-label="분석 신호">
+                <div>
+                    <span>갈변</span>
+                    <meter id="brownMeter" min="0" max="100" value="0"></meter>
+                </div>
+                <div>
+                    <span>붉은기</span>
+                    <meter id="redMeter" min="0" max="100" value="0"></meter>
+                </div>
+                <div>
+                    <span>탄화</span>
+                    <meter id="charMeter" min="0" max="100" value="0"></meter>
+                </div>
+                <div>
+                    <span>AI 확신</span>
+                    <meter id="confidenceMeter" min="0" max="100" value="0"></meter>
+                </div>
+            </div>
+
+            <ol class="grill-flow">
+                <li>하단 박스 안에 고기의 아래쪽 테두리와 옆면이 보이게 맞춥니다.</li>
+                <li>1초마다 프레임을 임시 분석하고 서버에 사진을 저장하지 않습니다.</li>
+                <li>측면 갈변과 가장자리 육즙 신호가 맞으면 “지금 뒤집으세요”를 안내합니다.</li>
+            </ol>
+
+            <p class="grill-safety">AI 안내는 사진 기반 참고용입니다. 두꺼운 고기, 닭고기, 분쇄육은 내부 온도계를 함께 사용해 주세요.</p>
+        </aside>
+    </div>
+</section>
+
+<script>
+const grillVideo = document.getElementById('grillVideo');
+const grillCanvas = document.getElementById('grillCanvas');
+const grillPlaceholder = document.getElementById('grillPlaceholder');
+const startGrillAi = document.getElementById('startGrillAi');
+const stopGrillAi = document.getElementById('stopGrillAi');
+const toggleVoice = document.getElementById('toggleVoice');
+const flipOverlay = document.getElementById('flipOverlay');
+const flipOverlayText = document.getElementById('flipOverlayText');
+const flipOverlayReason = document.getElementById('flipOverlayReason');
+const grillStatusTitle = document.getElementById('grillStatusTitle');
+const grillMessage = document.getElementById('grillMessage');
+const brownMeter = document.getElementById('brownMeter');
+const redMeter = document.getElementById('redMeter');
+const charMeter = document.getElementById('charMeter');
+const confidenceMeter = document.getElementById('confidenceMeter');
+
+let grillStream = null;
+let localTimer = null;
+let aiTimer = null;
+let voiceEnabled = true;
+let lastSpokenAt = 0;
+let lastLocalStatus = 'wait';
+let aiInFlight = false;
+
+function setPanel(status, message, confidence = 0) {
+    const labels = { wait: '조금 더 기다리세요', soon: '곧 뒤집을 준비', now: '지금 뒤집으세요', over: '너무 익었습니다' };
+    grillStatusTitle.textContent = labels[status] || '분석 중';
+    grillStatusTitle.dataset.status = status;
+    grillMessage.textContent = message;
+    confidenceMeter.value = Math.round(confidence * 100);
+}
+
+function speak(message) {
+    if (!voiceEnabled || !window.speechSynthesis) return;
+    const now = Date.now();
+    if (now - lastSpokenAt < 9000) return;
+    lastSpokenAt = now;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = 'ko-KR';
+    utterance.rate = 1;
+    window.speechSynthesis.speak(utterance);
+}
+
+function showFlipOverlay(status, message, reason) {
+    if (status === 'wait') {
+        flipOverlay.hidden = true;
+        return;
+    }
+    flipOverlay.hidden = false;
+    flipOverlay.dataset.status = status;
+    flipOverlayText.textContent = message;
+    flipOverlayReason.textContent = reason || '';
+    if (status === 'now' || status === 'over') speak(message);
+}
+
+function captureFrameBlob(quality = 0.78) {
+    if (!grillVideo.videoWidth) return Promise.resolve(null);
+    const sourceWidth = grillVideo.videoWidth;
+    const sourceHeight = grillVideo.videoHeight;
+    const cropX = Math.floor(sourceWidth * 0.12);
+    const cropY = Math.floor(sourceHeight * 0.42);
+    const cropWidth = Math.floor(sourceWidth * 0.76);
+    const cropHeight = Math.floor(sourceHeight * 0.5);
+    grillCanvas.width = cropWidth;
+    grillCanvas.height = cropHeight;
+    const context = grillCanvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(grillVideo, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+    return new Promise(resolve => grillCanvas.toBlob(resolve, 'image/jpeg', quality));
+}
+
+function analyzeLocalFrame() {
+    if (!grillVideo.videoWidth) return;
+    grillCanvas.width = 240;
+    grillCanvas.height = 180;
+    const context = grillCanvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(grillVideo, 0, 0, grillCanvas.width, grillCanvas.height);
+    const sx = Math.floor(grillCanvas.width * 0.12);
+    const sy = Math.floor(grillCanvas.height * 0.42);
+    const sw = Math.floor(grillCanvas.width * 0.76);
+    const sh = Math.floor(grillCanvas.height * 0.5);
+    const { data } = context.getImageData(sx, sy, sw, sh);
+    let brown = 0;
+    let red = 0;
+    let char = 0;
+    let bright = 0;
+    const total = data.length / 4;
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const avg = (r + g + b) / 3;
+        const pixelIndex = i / 4;
+        const x = pixelIndex % sw;
+        const y = Math.floor(pixelIndex / sw);
+        const sideOrBottomWeight = x < sw * 0.18 || x > sw * 0.82 || y > sh * 0.58 ? 1.55 : 1;
+        if (r > 85 && r < 190 && g > 42 && g < 125 && b < 95 && r > g * 1.18) brown += sideOrBottomWeight;
+        if (r > 120 && g < 95 && b < 90 && r > g * 1.35) red += sideOrBottomWeight;
+        if (avg < 48 && r < 72 && g < 72 && b < 72) char += sideOrBottomWeight;
+        if (avg > 185) bright += 1;
+    }
+    const brownScore = Math.min(100, Math.round((brown / total) * 260));
+    const redScore = Math.min(100, Math.round((red / total) * 240));
+    const charScore = Math.min(100, Math.round((char / total) * 320));
+    brownMeter.value = brownScore;
+    redMeter.value = redScore;
+    charMeter.value = charScore;
+
+    let status = 'wait';
+    let message = '표면 변화를 보고 있습니다.';
+    if (charScore > 32 && brownScore > 28) {
+        status = 'over';
+        message = '탄화 신호가 강합니다. 바로 확인하세요.';
+    } else if (brownScore > 48 && redScore < 38) {
+        status = 'now';
+        message = '지금 뒤집으세요.';
+    } else if (brownScore > 34 || (brownScore > 24 && redScore < 52)) {
+        status = 'soon';
+        message = '곧 뒤집을 준비를 해주세요.';
+    }
+    lastLocalStatus = status;
+    setPanel(status, message, status === 'now' ? 0.62 : status === 'soon' ? 0.45 : 0.2);
+    showFlipOverlay(status, message, '고기 하단 테두리와 측면의 갈변/탄화 신호 기준입니다.');
+}
+
+async function askAiForFrame() {
+    if (aiInFlight) return;
+    aiInFlight = true;
+    const blob = await captureFrameBlob();
+    if (!blob) {
+        aiInFlight = false;
+        return;
+    }
+    const formData = new FormData();
+    formData.append('grillFrame', blob, 'grill-frame.jpg');
+    try {
+        const response = await fetch('/grill-ai/analyze-frame', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'AI 확인 실패');
+        const aiStatus = data.flip_status || 'wait';
+        const priority = { wait: 0, soon: 1, now: 2, over: 3 };
+        const status = priority[aiStatus] >= priority[lastLocalStatus] ? aiStatus : lastLocalStatus;
+        const message = status === aiStatus ? data.message : (status === 'now' ? '지금 뒤집으세요.' : '곧 뒤집을 준비를 해주세요.');
+        setPanel(status, message, data.confidence || 0);
+        showFlipOverlay(status, message, data.visual_reason || 'AI가 표면 상태를 확인했습니다.');
+    } catch (error) {
+        grillMessage.textContent = 'AI 확인이 지연되어 화면 색 변화 기준으로 안내 중입니다.';
+    } finally {
+        aiInFlight = false;
+    }
+}
+
+async function startAssistant() {
+    try {
+        grillStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        });
+        grillVideo.srcObject = grillStream;
+        grillVideo.style.display = 'block';
+        grillPlaceholder.style.display = 'none';
+        startGrillAi.disabled = true;
+        stopGrillAi.disabled = false;
+        setPanel('wait', '분석을 시작했습니다. 고기 하단 테두리와 측면이 박스 안에 보이게 맞춰주세요.');
+        localTimer = window.setInterval(analyzeLocalFrame, 1000);
+        aiTimer = window.setInterval(askAiForFrame, 1000);
+        window.setTimeout(askAiForFrame, 1000);
+    } catch (error) {
+        setPanel('wait', '카메라를 열 수 없습니다. 브라우저 권한을 확인해주세요.');
+    }
+}
+
+function stopAssistant() {
+    window.clearInterval(localTimer);
+    window.clearInterval(aiTimer);
+    localTimer = null;
+    aiTimer = null;
+    if (grillStream) grillStream.getTracks().forEach(track => track.stop());
+    grillStream = null;
+    grillVideo.srcObject = null;
+    grillVideo.style.display = 'none';
+    grillPlaceholder.style.display = 'grid';
+    flipOverlay.hidden = true;
+    startGrillAi.disabled = false;
+    stopGrillAi.disabled = true;
+    setPanel('wait', '정지했습니다. 다시 시작하면 실시간 분석을 재개합니다.');
+}
+
+startGrillAi.addEventListener('click', startAssistant);
+stopGrillAi.addEventListener('click', stopAssistant);
+toggleVoice.addEventListener('click', () => {
+    voiceEnabled = !voiceEnabled;
+    toggleVoice.classList.toggle('is-on', voiceEnabled);
+    toggleVoice.innerHTML = voiceEnabled
+        ? '<i class="fas fa-volume-high"></i> 음성 켜짐'
+        : '<i class="fas fa-volume-xmark"></i> 음성 꺼짐';
+});
+</script>
+
+<style>
+.grill-ai-page {
+    min-height: calc(100vh - 82px);
+    background: #f8f3ea;
+    padding-bottom: 70px;
+}
+.grill-hero {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 42px 20px 22px;
+}
+.grill-hero h1 {
+    max-width: 920px;
+    margin: 10px 0 12px;
+    color: var(--green);
+    font-size: clamp(2.1rem, 4.4vw, 4.1rem);
+    line-height: 1.04;
+}
+.grill-hero p {
+    max-width: 720px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.75;
+}
+.grill-workspace {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+    gap: 16px;
+    align-items: start;
+}
+.grill-camera-card,
+.grill-status-panel {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 16px 42px rgba(66, 42, 18, 0.07);
+}
+.grill-camera-card {
+    padding: 16px;
+}
+.grill-stage {
+    min-height: 560px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #17120f;
+    display: grid;
+    place-items: center;
+}
+.grill-stage video {
+    width: 100%;
+    height: 100%;
+    min-height: 560px;
+    object-fit: cover;
+    display: none;
+}
+#grillCanvas {
+    display: none;
+}
+.grill-placeholder {
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    padding: 26px;
+    text-align: center;
+    color: #fff;
+}
+.grill-placeholder i {
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    font-size: 1.9rem;
+}
+.grill-placeholder strong {
+    font-size: 1.35rem;
+}
+.grill-placeholder span {
+    color: rgba(255,255,255,0.78);
+}
+.scan-area {
+    position: absolute;
+    inset: 42% 12% 9%;
+    border: 2px solid rgba(255,255,255,0.82);
+    border-radius: 8px;
+    box-shadow: 0 0 0 999px rgba(0,0,0,0.18);
+    pointer-events: none;
+}
+.scan-area span {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 52px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--gold);
+    box-shadow: 0 0 20px rgba(197,154,87,0.8);
+    animation: scanSweep 2.4s linear infinite;
+}
+.scan-area b {
+    position: absolute;
+    display: block;
+    background: rgba(197,154,87,0.92);
+    box-shadow: 0 0 18px rgba(197,154,87,0.72);
+}
+.scan-area .edge-left,
+.scan-area .edge-right {
+    top: 18%;
+    bottom: 12%;
+    width: 5px;
+    border-radius: 999px;
+}
+.scan-area .edge-left {
+    left: 10px;
+}
+.scan-area .edge-right {
+    right: 10px;
+}
+.scan-area .edge-bottom {
+    left: 12%;
+    right: 12%;
+    bottom: 10px;
+    height: 5px;
+    border-radius: 999px;
+}
+@keyframes scanSweep {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(260px); }
+    100% { transform: translateY(0); }
+}
+.flip-overlay {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    top: 22px;
+    z-index: 4;
+    padding: 18px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.95);
+    color: var(--green);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+}
+.flip-overlay[data-status="now"] {
+    background: var(--primary);
+    color: #fff;
+}
+.flip-overlay[data-status="over"] {
+    background: #19100e;
+    color: #fff;
+}
+.flip-overlay strong,
+.flip-overlay span {
+    display: block;
+}
+.flip-overlay strong {
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    line-height: 1.05;
+}
+.flip-overlay span {
+    margin-top: 8px;
+    line-height: 1.55;
+}
+.grill-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+.grill-actions button {
+    min-height: 50px;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 900;
+    cursor: pointer;
+}
+.primary-action {
+    border: 0;
+    background: var(--primary);
+    color: #fff;
+}
+.secondary-action {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--green);
+}
+.secondary-action.is-on {
+    background: var(--green);
+    color: #fff;
+}
+.grill-actions button:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+}
+.grill-status-panel {
+    padding: 24px;
+}
+.grill-status-panel h2 {
+    margin: 10px 0 12px;
+    color: var(--green);
+    font-size: 1.8rem;
+}
+.grill-status-panel h2[data-status="now"] {
+    color: var(--primary);
+}
+.grill-message {
+    padding: 14px;
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--muted);
+    line-height: 1.65;
+}
+.signal-grid {
+    display: grid;
+    gap: 12px;
+    margin: 18px 0;
+}
+.signal-grid div {
+    display: grid;
+    gap: 6px;
+}
+.signal-grid span {
+    color: var(--green);
+    font-weight: 900;
+}
+.signal-grid meter {
+    width: 100%;
+    height: 14px;
+}
+.grill-flow {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--muted);
+    line-height: 1.75;
+}
+.grill-safety {
+    margin: 18px 0 0;
+    padding: 14px;
+    border: 1px solid rgba(143,23,29,0.22);
+    border-radius: 8px;
+    background: #fff4ec;
+    color: var(--primary);
+    line-height: 1.6;
+    font-weight: 800;
+}
+@media (max-width: 900px) {
+    .grill-hero {
+        padding: 34px 16px 18px;
+    }
+    .grill-workspace {
+        grid-template-columns: 1fr;
+        padding: 0 16px;
+    }
+    .grill-stage,
+    .grill-stage video {
+        min-height: 430px;
+    }
+    .grill-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
