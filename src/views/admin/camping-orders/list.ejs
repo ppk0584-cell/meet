@@ -26,7 +26,7 @@
                     </td>
                     <td><%= order.requested_receive_date %></td>
                     <td>
-                        <%= order.destination_type === 'campground' ? '캠핑장' : '거주지' %>
+                        <%= order.destination_type === 'campground' ? '캠핑장' : '배송지' %>
                         <% if (order.holiday_warning) { %>
                             <br><span class="status-badge incoming">재확인 필요</span>
                         <% } %>

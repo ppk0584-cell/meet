@@ -93,14 +93,14 @@ function isHolidayPeriod(dateValue) {
     if (date.getUTCDay() === 0) {
         return {
             warning: true,
-            reason: '수령희망일이 일요일입니다. 다음날 택배 도착 특성상 캠핑장 수령이 어려울 수 있어 거주지 수령을 권장합니다.'
+            reason: '수령희망일이 일요일입니다. 다음날 택배 도착 특성상 캠핑장 수령이 어려울 수 있어 배송지 수령을 권장합니다.'
         };
     }
 
     if (HOLIDAY_NAMES[ymd]) {
         return {
             warning: true,
-            reason: `수령희망일이 ${HOLIDAY_NAMES[ymd]}입니다. 연휴 기간에는 캠핑장 배송보다 거주지 수령 후 이동을 권장합니다.`
+            reason: `수령희망일이 ${HOLIDAY_NAMES[ymd]}입니다. 연휴 기간에는 캠핑장 배송보다 배송지 수령 후 이동을 권장합니다.`
         };
     }
 
@@ -262,7 +262,7 @@ class CampingOrder {
         if (!clean(data.customer_phone)) errors.push('연락처를 입력해주세요.');
         if (!clean(data.requested_receive_date)) errors.push('수령희망일자를 선택해주세요.');
         if (clean(data.destination_type) === 'home') {
-            if (!clean(data.home_address)) errors.push('거주지 수령 주소를 입력해주세요.');
+            if (!clean(data.home_address)) errors.push('배송지 주소를 입력해주세요.');
         } else {
             if (!clean(data.campground_name)) errors.push('캠핑장 이름을 입력해주세요.');
             if (!clean(data.campground_address)) errors.push('캠핑장 주소를 입력해주세요.');
