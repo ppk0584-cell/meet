@@ -1,0 +1,27 @@
+name: Sync YouTube Recipe Candidates
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_results:
+        description: 'Videos per search keyword'
+        required: true
+        default: '5'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run sync on server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST || '116.124.128.96' }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          username: ${{ secrets.SSH_USER || 'root' }}
+          password: ${{ secrets.SSH_PASSWORD || vars.SSH_PASSWORD }}
+          script: |
+            set -e
+            APP_DIR="${{ secrets.DEPLOY_PATH || '/var/www/freshmatmall/current' }}"
+            cd "$APP_DIR"
+            YOUTUBE_API_KEY="${{ secrets.YOUTUBE_API_KEY }}" node scripts/sync_youtube_recipes.js "${{ inputs.max_results }}"
