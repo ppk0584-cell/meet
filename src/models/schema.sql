@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS camping_orders (
     customer_memo TEXT,
     holiday_warning BOOLEAN DEFAULT FALSE,
     holiday_warning_reason VARCHAR(500),
+    address_confirmed BOOLEAN DEFAULT FALSE,
     verification_status ENUM('pending', 'confirmed', 'need_check', 'cancelled') DEFAULT 'pending',
     seller_memo TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -283,6 +283,12 @@
                             <span>캠핑장 주소</span>
                             <input type="text" name="campground_address" id="campgroundAddress" placeholder="새 캠핑장이면 주소를 입력해주세요" required>
                         </label>
+                        <label class="campground-address-confirm">
+                            <input type="checkbox" name="campground_address_confirm" id="campgroundAddressConfirm" value="yes">
+                            <span>
+                                캠핑장 주소를 정확히 확인했습니다. 캠핑장명 또는 주소 오입력으로 인한 오배송은 판매자 측에서 책임지지 않음을 확인합니다.
+                            </span>
+                        </label>
                     </div>
 
                     <div class="home-fields" id="homeFields" hidden>
@@ -784,6 +790,7 @@ const holidayWarning = document.getElementById('campingHolidayWarning');
 const campgroundFields = document.getElementById('campgroundFields');
 const homeFields = document.getElementById('homeFields');
 const homeAddressInput = document.getElementById('homeAddress');
+const campgroundAddressConfirmInput = document.getElementById('campgroundAddressConfirm');
 const campgroundDestinationInput = document.querySelector('input[name="destination_type"][value="campground"]');
 const homeDestinationInput = document.querySelector('input[name="destination_type"][value="home"]');
 const holidayDates = new Set([
@@ -811,6 +818,10 @@ function syncDestinationControls() {
         homeFields.hidden = false;
         campgroundNameInput.required = false;
         campgroundAddressInput.required = false;
+        if (campgroundAddressConfirmInput) {
+            campgroundAddressConfirmInput.required = false;
+            campgroundAddressConfirmInput.checked = false;
+        }
         homeAddressInput.required = true;
         return;
     }
@@ -821,6 +832,7 @@ function syncDestinationControls() {
     homeFields.hidden = !useHome;
     campgroundNameInput.required = !useHome;
     campgroundAddressInput.required = !useHome;
+    if (campgroundAddressConfirmInput) campgroundAddressConfirmInput.required = !useHome;
     homeAddressInput.required = !!useHome;
 }
 
@@ -1244,6 +1256,24 @@ if (receiveDateInput && holidayWarning) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+}
+.campground-address-confirm {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid rgba(143,23,29,0.24);
+    border-radius: 8px;
+    background: #fff4ec;
+    color: var(--primary);
+    font-weight: 800;
+    line-height: 1.55;
+}
+.campground-address-confirm input {
+    width: auto;
+    margin-top: 4px;
+    accent-color: var(--primary);
 }
 .destination-fieldset,
 .package-fieldset {

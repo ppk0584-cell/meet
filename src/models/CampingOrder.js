@@ -3,6 +3,11 @@ const pool = require('../config/db');
 
 const SEEDED_CAMPGROUNDS = [
     {
+        name: '초안산캠핑장',
+        address: '서울특별시 노원구 마들로5가길 66-107',
+        phone: '02-2289-6865'
+    },
+    {
         name: '자라섬 캠핑장',
         address: '경기도 가평군 가평읍 자라섬로 60',
         phone: '031-8078-8028'
@@ -13,9 +18,169 @@ const SEEDED_CAMPGROUNDS = [
         phone: '02-373-2021'
     },
     {
+        name: '안산화랑오토캠핑장',
+        address: '경기도 안산시 단원구 동산로 268',
+        phone: '031-481-9800'
+    },
+    {
+        name: '연천 한탄강 오토캠핑장',
+        address: '경기도 연천군 전곡읍 선사로 76',
+        phone: '031-833-0030'
+    },
+    {
+        name: '강화도산들애농원 캠핑장',
+        address: '인천광역시 강화군 강화읍 고비고개로 171',
+        phone: ''
+    },
+    {
+        name: '송도스포츠캠핑장',
+        address: '인천광역시 연수구 인천신항대로892번길 40',
+        phone: '032-899-4888'
+    },
+    {
+        name: '마글램핑장',
+        address: '부산광역시 강서구 가락대로 929',
+        phone: ''
+    },
+    {
+        name: '삼락생태공원 오토캠핑장',
+        address: '부산광역시 사상구 삼락동 29-59',
+        phone: '051-313-6015'
+    },
+    {
+        name: '달서별빛캠프 캠핑장',
+        address: '대구광역시 달서구 앞산순환로 248',
+        phone: '053-667-3191'
+    },
+    {
+        name: '승촌보캠핑장',
+        address: '광주광역시 남구 승촌보길 90',
+        phone: '062-603-5340'
+    },
+    {
+        name: '로하스가족공원캠핑장',
+        address: '대전광역시 대덕구 대청로424번길 200',
+        phone: '042-933-6575'
+    },
+    {
+        name: '대왕암공원 캠핑장',
+        address: '울산광역시 동구 등대로 140',
+        phone: '052-209-4530'
+    },
+    {
+        name: '세종합강캠핑장',
+        address: '세종특별자치시 연동면 태산로 329',
+        phone: '044-850-1117'
+    },
+    {
         name: '망상오토캠핑리조트',
         address: '강원특별자치도 동해시 동해대로 6370',
         phone: '033-539-3600'
+    },
+    {
+        name: '평창오렌지캠핑장',
+        address: '강원특별자치도 평창군 봉평면 흥정계곡4길 71',
+        phone: ''
+    },
+    {
+        name: '영월계곡 느티별 캠핑장',
+        address: '강원특별자치도 영월군 김삿갓면 내리계곡로 1106',
+        phone: ''
+    },
+    {
+        name: '속초해변 국민여가캠핑장',
+        address: '강원특별자치도 속초시 해오름로 190',
+        phone: '033-639-2027'
+    },
+    {
+        name: '충주탄금호캠핑장',
+        address: '충청북도 충주시 중앙탑면 중앙탑길 150',
+        phone: '043-850-6732'
+    },
+    {
+        name: '청풍호오토캠핑장',
+        address: '충청북도 제천시 청풍면 청풍호로 2048',
+        phone: ''
+    },
+    {
+        name: 'CLUB 596',
+        address: '충청남도 태안군 남면 몽산리 596',
+        phone: ''
+    },
+    {
+        name: '당진해양캠핑공원',
+        address: '충청남도 당진시 신평면 산정길 112',
+        phone: ''
+    },
+    {
+        name: '국립중앙청소년수련원 야영장',
+        address: '충청남도 천안시 동남구 목천읍 서리4길 48',
+        phone: '041-620-7700'
+    },
+    {
+        name: '금강 두승산 글램핑',
+        address: '전북특별자치도 정읍시 고부면 영원로 222-15',
+        phone: ''
+    },
+    {
+        name: '무주구천동캠핑장',
+        address: '전북특별자치도 무주군 설천면 구천동로 1048-26',
+        phone: ''
+    },
+    {
+        name: '변산반도국립공원 고사포야영장',
+        address: '전북특별자치도 부안군 변산면 노루목길 8-8',
+        phone: '063-582-7808'
+    },
+    {
+        name: '순천만국가정원 오토캠핑장',
+        address: '전라남도 순천시 국가정원1호길 162-11',
+        phone: '061-749-5500'
+    },
+    {
+        name: '장흥 심천공원 오토캠핑장',
+        address: '전라남도 장흥군 부산면 심천공원길 25-45',
+        phone: ''
+    },
+    {
+        name: '동재가산수피아',
+        address: '경상북도 칠곡군 가산면 학하리 1206-1',
+        phone: '054-979-6088'
+    },
+    {
+        name: '칠곡보 오토캠핑장',
+        address: '경상북도 칠곡군 약목면 강변서로 110-43',
+        phone: ''
+    },
+    {
+        name: '문경새재 국민여가캠핑장',
+        address: '경상북도 문경시 문경읍 새재1길 47',
+        phone: '054-572-3762'
+    },
+    {
+        name: '북캠프지오',
+        address: '경상남도 거제시 남부면 명사해수욕장길 30',
+        phone: ''
+    },
+    {
+        name: '함양대봉캠핑랜드',
+        address: '경상남도 함양군 병곡면 병곡지곡로 331',
+        phone: '055-963-2026'
+    },
+    {
+        name: '황매산오토캠핑장',
+        address: '경상남도 합천군 가회면 황매산공원길 331',
+        phone: '055-930-4753'
+    },
+    {
+        name: '서귀포자연휴양림야영장',
+        address: '제주특별자치도 서귀포시 1100로 882',
+        phone: '064-738-4544'
+    },
+    {
+        name: '교래자연휴양림 야영장',
+        address: '제주특별자치도 제주시 조천읍 남조로 2023',
+        phone: '064-783-7482'
     }
 ];
 
@@ -154,7 +319,20 @@ class CampingOrder {
             )
         `);
 
+        await this.addColumnIfMissing('camping_orders', 'address_confirmed', 'BOOLEAN DEFAULT FALSE');
         await this.seedCampgrounds();
+    }
+
+    static async addColumnIfMissing(table, column, definition) {
+        const [rows] = await pool.query(
+            `SELECT COUNT(*) AS count
+             FROM INFORMATION_SCHEMA.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?`,
+            [table, column]
+        );
+        if (!rows[0].count) {
+            await pool.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+        }
     }
 
     static async seedCampgrounds() {
@@ -230,8 +408,8 @@ class CampingOrder {
                 (order_number, customer_name, customer_phone, customer_email, people_count, quantity,
                  requested_receive_date, destination_type, campground_location_id, campground_name,
                  delivery_address, delivery_detail, package_options, customer_memo,
-                 holiday_warning, holiday_warning_reason, verification_status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                 holiday_warning, holiday_warning_reason, verification_status, address_confirmed)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 this.buildOrderNumber(),
                 clean(data.customer_name),
@@ -249,7 +427,8 @@ class CampingOrder {
                 clean(data.customer_memo),
                 warning.warning,
                 warning.reason,
-                warning.warning ? 'need_check' : 'pending'
+                warning.warning ? 'need_check' : 'pending',
+                destinationType === 'campground' && clean(data.campground_address_confirm) === 'yes'
             ]
         );
 
@@ -266,6 +445,9 @@ class CampingOrder {
         } else {
             if (!clean(data.campground_name)) errors.push('캠핑장 이름을 입력해주세요.');
             if (!clean(data.campground_address)) errors.push('캠핑장 주소를 입력해주세요.');
+            if (clean(data.campground_address_confirm) !== 'yes') {
+                errors.push('캠핑장 주소 확인 및 오배송 책임 안내에 동의해주세요.');
+            }
         }
         return errors;
     }

@@ -40,6 +40,12 @@
                     <dt>주소</dt>
                     <dd><%= order.delivery_address %> <%= order.delivery_detail || '' %></dd>
                 </div>
+                <% if (order.destination_type === 'campground') { %>
+                    <div>
+                        <dt>캠핑장 주소 확인</dt>
+                        <dd><%= order.address_confirmed ? '주소 확인 및 오배송 책임 안내 동의 완료' : '주소 확인 동의 미확인' %></dd>
+                    </div>
+                <% } %>
             </dl>
             <a href="/products" class="btn btn-primary">상품 페이지로 돌아가기</a>
         </div>

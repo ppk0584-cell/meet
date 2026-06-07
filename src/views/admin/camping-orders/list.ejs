@@ -39,6 +39,11 @@
                         <% if (order.delivery_detail) { %>
                             <br><small><%= order.delivery_detail %></small>
                         <% } %>
+                        <% if (order.destination_type === 'campground') { %>
+                            <br><small class="<%= order.address_confirmed ? 'text-green' : 'text-red' %>">
+                                주소 책임 안내 <%= order.address_confirmed ? '확인 완료' : '미확인' %>
+                            </small>
+                        <% } %>
                         <% if (order.holiday_warning_reason) { %>
                             <br><small class="text-red"><%= order.holiday_warning_reason %></small>
                         <% } %>
@@ -68,5 +73,8 @@
 }
 .text-red {
     color: #c0392b;
+}
+.text-green {
+    color: #1f7a4d;
 }
 </style>
