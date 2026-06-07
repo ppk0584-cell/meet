@@ -115,6 +115,7 @@
                                 <span class="product-kicker">MEAT SET</span>
                                 <h3>바비큐 고기 세트</h3>
                                 <p>삼겹살, 목살, 소고기 구이용을 인원에 맞춰 구성합니다.</p>
+                                <strong class="camping-price">69,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -124,6 +125,7 @@
                                 <span class="product-kicker">VEGETABLE SET</span>
                                 <h3>쌈채소 야채 세트</h3>
                                 <p>쌈채소, 마늘, 고추, 버섯 등 고기와 같이 먹기 좋은 구성입니다.</p>
+                                <strong class="camping-price">14,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -133,6 +135,7 @@
                                 <span class="product-kicker">CAMPING GOODS</span>
                                 <h3>캠핑 식사용품 세트</h3>
                                 <p>집게, 위생장갑, 일회용 접시, 간단 소모품을 함께 준비합니다.</p>
+                                <strong class="camping-price">19,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -142,6 +145,7 @@
                                 <span class="product-kicker">PORK</span>
                                 <h3>삼겹살</h3>
                                 <p>숯불에 기름이 돌며 고소하게 익는 캠핑 기본 구이용입니다.</p>
+                                <strong class="camping-price">18,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -151,6 +155,7 @@
                                 <span class="product-kicker">PORK</span>
                                 <h3>목살</h3>
                                 <p>두툼하게 구워도 담백하고 씹는 맛이 좋은 캠핑용 부위입니다.</p>
+                                <strong class="camping-price">17,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -160,6 +165,7 @@
                                 <span class="product-kicker">BEEF TOMAHAWK</span>
                                 <h3>토마호크 - 소</h3>
                                 <p>캠핑장 메인 요리로 어울리는 묵직한 소고기 구이입니다.</p>
+                                <strong class="camping-price">89,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -169,6 +175,7 @@
                                 <span class="product-kicker">PORK TOMAHAWK</span>
                                 <h3>토마호크 - 돼지</h3>
                                 <p>뼈대가 살아 있어 보기 좋고 굽기 쉬운 돼지고기 캠핑 메뉴입니다.</p>
+                                <strong class="camping-price">24,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -178,6 +185,7 @@
                                 <span class="product-kicker">TENDERLOIN</span>
                                 <h3>안심</h3>
                                 <p>부드럽게 먹고 싶은 분들을 위한 고급 구이용 단품입니다.</p>
+                                <strong class="camping-price">39,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -187,6 +195,7 @@
                                 <span class="product-kicker">SIRLOIN</span>
                                 <h3>등심</h3>
                                 <p>풍미와 식감의 균형이 좋아 가족 캠핑 구이에 잘 맞습니다.</p>
+                                <strong class="camping-price">34,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -196,6 +205,7 @@
                                 <span class="product-kicker">CHARCOAL</span>
                                 <h3>숯</h3>
                                 <p>고기와 함께 준비하면 장보기 동선이 줄어드는 캠핑 필수품입니다.</p>
+                                <strong class="camping-price">12,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
@@ -205,22 +215,20 @@
                                 <span class="product-kicker">SSAM VEGETABLE</span>
                                 <h3>대표 쌈 야채</h3>
                                 <p>상추, 깻잎 등 고기와 같이 먹기 좋은 기본 쌈 야채입니다.</p>
+                                <strong class="camping-price">8,000원</strong>
                                 <button type="button" class="btn btn-sm btn-primary camping-cart-button">담기</button>
                             </div>
                         </article>
                     </div>
 
-                    <div class="camping-cart-panel">
-                        <h3>캠핑 장바구니</h3>
-                        <p>필요한 세트를 담은 뒤 주문 정보를 입력해주세요.</p>
-                        <ul id="campingCartList" class="camping-cart-list">
-                            <li class="empty">아직 담은 캠핑 세트가 없습니다.</li>
-                        </ul>
-                        <button type="button" class="btn btn-light" id="campingOrderToggle" disabled>주문 정보 입력</button>
-                    </div>
                 </div>
 
                 <form class="camping-order-form" id="campingOrderForm" action="/camping-orders" method="POST" hidden>
+                    <div class="camping-order-heading">
+                        <span class="product-kicker">ORDER FORM</span>
+                        <h3>캠핑 주문 정보 입력</h3>
+                        <p>담은 상품을 확인한 뒤 수령희망일자와 수령지를 입력해주세요.</p>
+                    </div>
                     <input type="hidden" name="package_options" id="campingPackageOptions" value="">
                     <div class="form-grid">
                         <label>
@@ -304,6 +312,14 @@
         </main>
 
         <aside class="visual-scroll-nav" aria-label="상품 사진 네비게이션">
+            <div class="camping-cart-panel">
+                <h3>캠핑 장바구니</h3>
+                <p>필요한 상품을 담은 뒤 주문 정보를 입력해주세요.</p>
+                <ul id="campingCartList" class="camping-cart-list">
+                    <li class="empty">아직 담은 캠핑 상품이 없습니다.</li>
+                </ul>
+                <button type="button" class="btn btn-light" id="campingOrderToggle" disabled>주문 정보 입력</button>
+            </div>
             <div class="type-symbol-filter" aria-label="고기 종류 필터">
                 <button type="button" data-type="all" title="전체"><span class="type-symbol all" aria-hidden="true">ALL</span></button>
                 <button type="button" data-type="beef" title="소고기">
@@ -691,7 +707,7 @@ function renderCampingCart() {
     if (!campingCart.length) {
         const emptyItem = document.createElement('li');
         emptyItem.className = 'empty';
-        emptyItem.textContent = '아직 담은 캠핑 세트가 없습니다.';
+        emptyItem.textContent = '아직 담은 캠핑 상품이 없습니다.';
         campingCartList.appendChild(emptyItem);
         campingOrderToggle.disabled = true;
         campingPackageOptions.value = '';
@@ -712,7 +728,9 @@ document.addEventListener('click', (event) => {
     if (addButton) {
         const card = addButton.closest('.camping-product-card');
         const option = card?.dataset.campingOption;
-        if (option && !campingCart.includes(option)) campingCart.push(option);
+        const price = card?.querySelector('.camping-price')?.textContent.trim();
+        const optionLabel = price ? `${option} (${price})` : option;
+        if (option && !campingCart.includes(optionLabel)) campingCart.push(optionLabel);
         addButton.textContent = '담김';
         addButton.classList.add('is-added');
         renderCampingCart();
@@ -971,14 +989,11 @@ if (receiveDateInput && holidayWarning) {
     max-width: 760px;
 }
 .camping-shop-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 16px;
-    align-items: start;
+    display: block;
 }
 .camping-product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
 }
 .camping-product-card,
@@ -990,7 +1005,20 @@ if (receiveDateInput && holidayWarning) {
 }
 .camping-product-card {
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
+.camping-product-card:nth-child(6) { order: 10; }
+.camping-product-card:nth-child(8) { order: 11; }
+.camping-product-card:nth-child(9) { order: 12; }
+.camping-product-card:nth-child(4) { order: 20; }
+.camping-product-card:nth-child(5) { order: 21; }
+.camping-product-card:nth-child(7) { order: 22; }
+.camping-product-card:nth-child(11) { order: 30; }
+.camping-product-card:nth-child(2) { order: 31; }
+.camping-product-card:nth-child(10) { order: 35; }
+.camping-product-card:nth-child(3) { order: 36; }
+.camping-product-card:nth-child(1) { order: 40; }
 .camping-product-card img {
     width: 100%;
     aspect-ratio: 4 / 3;
@@ -998,6 +1026,9 @@ if (receiveDateInput && holidayWarning) {
 }
 .camping-product-card > div {
     padding: 16px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
 }
 .camping-product-card h3,
 .camping-cart-panel h3 {
@@ -1009,14 +1040,29 @@ if (receiveDateInput && holidayWarning) {
     color: var(--muted);
     line-height: 1.55;
 }
+.camping-product-card p {
+    flex: 1;
+}
+.camping-price {
+    display: block;
+    margin-top: 12px;
+    color: var(--primary);
+    font-size: 1.18rem;
+    font-weight: 900;
+}
 .camping-product-card .btn {
     width: 100%;
-    margin-top: 8px;
+    margin-top: 12px;
 }
 .camping-cart-panel {
-    position: sticky;
-    top: 104px;
-    padding: 16px;
+    margin-bottom: 12px;
+    padding: 14px;
+}
+.camping-cart-panel h3 {
+    font-size: 1rem;
+}
+.camping-cart-panel p {
+    font-size: 0.88rem;
 }
 .camping-cart-list {
     display: grid;
@@ -1060,6 +1106,23 @@ if (receiveDateInput && holidayWarning) {
 }
 .camping-order-form {
     margin-top: 18px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.96);
+    box-shadow: 0 12px 34px rgba(66, 42, 18, 0.08);
+}
+.camping-order-heading {
+    margin-bottom: 16px;
+}
+.camping-order-heading h3 {
+    margin: 6px 0 6px;
+    color: var(--green);
+}
+.camping-order-heading p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
 }
 .camping-ready-copy h2 {
     margin: 10px 0;
@@ -1167,7 +1230,7 @@ if (receiveDateInput && holidayWarning) {
     position: sticky;
     top: calc(50vh - 260px);
     align-self: start;
-    width: 200px;
+    width: 220px;
     justify-self: end;
 }
 .type-symbol-filter {
@@ -1478,12 +1541,8 @@ if (receiveDateInput && holidayWarning) {
     .camping-ready-section {
         padding: 24px 16px;
     }
-    .camping-shop-layout,
     .camping-product-grid {
         grid-template-columns: 1fr;
-    }
-    .camping-cart-panel {
-        position: static;
     }
 }
 @media (max-width: 1099px) {
@@ -1515,6 +1574,7 @@ if (receiveDateInput && holidayWarning) {
     .visual-scroll-nav {
         display: block;
         order: -1;
+        width: auto;
     }
     .visual-card {
         display: none;
