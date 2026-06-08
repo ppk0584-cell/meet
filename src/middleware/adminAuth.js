@@ -1,9 +1,58 @@
 const crypto = require('crypto');
+const pool = require('../config/db');
 
 const DEFAULT_ADMIN_PASSWORD = 'freshmeat2026!';
+const ADMIN_PASSWORD_KEY = 'admin_password_hash';
 
 function getAdminPassword() {
     return process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+}
+
+async function ensureAdminSettingsSchema() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS admin_settings (
+            setting_key VARCHAR(100) PRIMARY KEY,
+            setting_value TEXT NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    `);
+}
+
+function hashPassword(password, salt = crypto.randomBytes(16).toString('base64url')) {
+    const hash = crypto.pbkdf2Sync(String(password), salt, 120000, 32, 'sha256').toString('base64url');
+    return `pbkdf2_sha256$120000$${salt}$${hash}`;
+}
+
+function verifyHash(password, storedHash) {
+    const [method, iterations, salt, expected] = String(storedHash || '').split('$');
+    if (method !== 'pbkdf2_sha256' || !iterations || !salt || !expected) return false;
+    const hash = crypto.pbkdf2Sync(String(password), salt, Number(iterations), 32, 'sha256').toString('base64url');
+    return safeCompare(hash, expected);
+}
+
+async function getStoredPasswordHash() {
+    await ensureAdminSettingsSchema();
+    const [rows] = await pool.query(
+        'SELECT setting_value FROM admin_settings WHERE setting_key = ?',
+        [ADMIN_PASSWORD_KEY]
+    );
+    return rows[0]?.setting_value || null;
+}
+
+async function verifyAdminPassword(password) {
+    const storedHash = await getStoredPasswordHash();
+    if (storedHash) return verifyHash(password, storedHash);
+    return safeCompare(password, getAdminPassword());
+}
+
+async function setAdminPassword(password) {
+    await ensureAdminSettingsSchema();
+    await pool.query(
+        `INSERT INTO admin_settings (setting_key, setting_value)
+         VALUES (?, ?)
+         ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)`,
+        [ADMIN_PASSWORD_KEY, hashPassword(password)]
+    );
 }
 
 function safeCompare(value, expected) {
@@ -44,13 +93,50 @@ function requireAdmin(req, res, next) {
     return res.status(401).json({ ok: false, message: '관리자 인증이 필요합니다.' });
 }
 
-function login(req, res) {
+async function login(req, res) {
     const { password } = req.body || {};
-    if (!safeCompare(password, getAdminPassword())) {
+    if (!(await verifyAdminPassword(password))) {
         return res.status(401).json({ ok: false, message: '관리자 비밀번호가 맞지 않습니다.' });
     }
     req.session.adminAuthenticated = true;
     res.json({ ok: true, redirect: '/admin' });
+}
+
+async function changePassword(req, res) {
+    const { current_password, new_password, confirm_password } = req.body || {};
+    if (!(await verifyAdminPassword(current_password))) {
+        return res.status(400).render('admin/settings', {
+            title: '관리자 설정',
+            layout: 'admin/layout',
+            message: null,
+            error: '현재 비밀번호가 맞지 않습니다.'
+        });
+    }
+    if (!new_password || String(new_password).length < 8) {
+        return res.status(400).render('admin/settings', {
+            title: '관리자 설정',
+            layout: 'admin/layout',
+            message: null,
+            error: '새 비밀번호는 8자 이상이어야 합니다.'
+        });
+    }
+    if (new_password !== confirm_password) {
+        return res.status(400).render('admin/settings', {
+            title: '관리자 설정',
+            layout: 'admin/layout',
+            message: null,
+            error: '새 비밀번호 확인이 일치하지 않습니다.'
+        });
+    }
+
+    await setAdminPassword(new_password);
+    req.session.adminAuthenticated = true;
+    res.render('admin/settings', {
+        title: '관리자 설정',
+        layout: 'admin/layout',
+        message: '관리자 비밀번호를 변경했습니다.',
+        error: null
+    });
 }
 
 function logout(req, res) {
@@ -63,5 +149,6 @@ function logout(req, res) {
 module.exports = {
     requireAdmin,
     login,
-    logout
+    logout,
+    changePassword
 };

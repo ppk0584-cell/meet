@@ -54,3 +54,12 @@ exports.index = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+exports.settings = (req, res) => {
+    res.render('admin/settings', {
+        title: '관리자 설정',
+        layout: 'admin/layout',
+        message: null,
+        error: null
+    });
+};

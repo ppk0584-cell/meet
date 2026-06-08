@@ -139,6 +139,12 @@ CREATE TABLE IF NOT EXISTS passkey_credentials (
     FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS admin_settings (
+    setting_key VARCHAR(100) PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS managed_files (
     id INT AUTO_INCREMENT PRIMARY KEY,
     original_name VARCHAR(255) NOT NULL,

@@ -39,6 +39,8 @@ router.get('/logout', adminAuth.logout);
 router.use(adminAuth.requireAdmin);
 
 router.get('/', adminController.index);
+router.get('/settings', adminController.settings);
+router.post('/settings/password', adminAuth.changePassword);
 
 // Product Management
 router.get('/products', productController.list);
