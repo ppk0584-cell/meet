@@ -21,11 +21,17 @@
     <script>
         (() => {
             let busy = false;
-            window.addEventListener('keydown', async event => {
-                const key = String(event.key || '').toLowerCase();
-                const isAdminShortcut = event.ctrlKey && event.altKey && (event.code === 'KeyM' || key === 'm');
-                if (!isAdminShortcut || busy) return;
-                event.preventDefault();
+            let adminKeyBuffer = '';
+            let adminKeyTimer;
+
+            const isTextInput = element => {
+                if (!element) return false;
+                const tagName = String(element.tagName || '').toLowerCase();
+                return tagName === 'input' || tagName === 'textarea' || tagName === 'select' || element.isContentEditable;
+            };
+
+            const openAdminPrompt = async () => {
+                if (busy) return;
                 const password = window.prompt('관리자 비밀번호를 입력하세요.');
                 if (!password) return;
                 busy = true;
@@ -45,6 +51,30 @@
                     window.alert('관리자 인증 요청을 처리하지 못했습니다.');
                 } finally {
                     busy = false;
+                }
+            };
+
+            window.addEventListener('keydown', async event => {
+                const key = String(event.key || '').toLowerCase();
+
+                if (event.ctrlKey && event.altKey && (event.code === 'KeyM' || key === 'm')) {
+                    event.preventDefault();
+                    openAdminPrompt();
+                    return;
+                }
+
+                if (isTextInput(event.target) || event.ctrlKey || event.altKey || event.metaKey || key.length !== 1) return;
+
+                adminKeyBuffer = `${adminKeyBuffer}${key}`.slice(-5);
+                window.clearTimeout(adminKeyTimer);
+                adminKeyTimer = window.setTimeout(() => {
+                    adminKeyBuffer = '';
+                }, 1200);
+
+                if (adminKeyBuffer === 'admin') {
+                    adminKeyBuffer = '';
+                    event.preventDefault();
+                    openAdminPrompt();
                 }
             }, true);
         })();

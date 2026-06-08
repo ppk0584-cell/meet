@@ -97,7 +97,7 @@ function loginPageHtml(error = '') {
                     <input id="password" name="password" type="password" autocomplete="current-password" autofocus required>
                     <button type="submit">관리자 모드 들어가기</button>
                 </form>
-                <p class="hint">상점 화면에서는 Ctrl + Alt + M 단축키도 사용할 수 있습니다.</p>
+                <p class="hint">상점 화면에서 admin을 순서대로 입력해도 관리자 비밀번호 창이 열립니다.</p>
                 <a href="/">상점으로 돌아가기</a>
             </main>
         </body>
