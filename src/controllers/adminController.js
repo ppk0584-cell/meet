@@ -36,7 +36,7 @@ exports.index = async (req, res) => {
         );
 
         const [recentOrders] = await pool.query(
-            `SELECT order_number, customer_name, total_amount, status, created_at
+            `SELECT order_number, customer_name, people_count, quantity, verification_status, created_at
              FROM camping_orders
              ORDER BY created_at DESC, id DESC
              LIMIT 5`

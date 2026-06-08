@@ -71,7 +71,7 @@
                 <tr>
                     <th>주문번호</th>
                     <th>고객명</th>
-                    <th>금액</th>
+                    <th>인원/수량</th>
                     <th>상태</th>
                     <th>접수일</th>
                 </tr>
@@ -82,8 +82,8 @@
                         <tr>
                             <td><%= order.order_number %></td>
                             <td><%= order.customer_name %></td>
-                            <td><%= Number(order.total_amount || 0).toLocaleString() %>원</td>
-                            <td><span class="status-badge stock"><%= order.status || '접수' %></span></td>
+                            <td><%= order.people_count || 0 %>인 / <%= order.quantity || 0 %>세트</td>
+                            <td><span class="status-badge <%= order.verification_status === 'need_check' ? 'out' : 'stock' %>"><%= order.verification_status || 'pending' %></span></td>
                             <td><%= order.created_at ? new Date(order.created_at).toLocaleString('ko-KR') : '-' %></td>
                         </tr>
                     <% }) %>
