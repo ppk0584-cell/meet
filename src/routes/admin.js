@@ -34,6 +34,7 @@ const fileUpload = multer({
     limits: { fileSize: 50 * 1024 * 1024 }
 });
 
+router.get('/login', adminAuth.loginForm);
 router.post('/login', adminAuth.login);
 router.get('/logout', adminAuth.logout);
 router.use(adminAuth.requireAdmin);

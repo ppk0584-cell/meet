@@ -22,7 +22,9 @@
         (() => {
             let busy = false;
             window.addEventListener('keydown', async event => {
-                if (!(event.ctrlKey && event.altKey && event.code === 'KeyM') || busy) return;
+                const key = String(event.key || '').toLowerCase();
+                const isAdminShortcut = event.ctrlKey && event.altKey && (event.code === 'KeyM' || key === 'm');
+                if (!isAdminShortcut || busy) return;
                 event.preventDefault();
                 const password = window.prompt('관리자 비밀번호를 입력하세요.');
                 if (!password) return;
@@ -44,7 +46,7 @@
                 } finally {
                     busy = false;
                 }
-            });
+            }, true);
         })();
 
         (() => {
