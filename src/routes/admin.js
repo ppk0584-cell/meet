@@ -9,6 +9,7 @@ const fileController = require('../controllers/fileController');
 const campingOrderController = require('../controllers/campingOrderController');
 const multer = require('multer');
 const path = require('path');
+const adminAuth = require('../middleware/adminAuth');
 
 // Multer Storage Configuration
 const storage = multer.diskStorage({
@@ -33,12 +34,19 @@ const fileUpload = multer({
     limits: { fileSize: 50 * 1024 * 1024 }
 });
 
+router.post('/login', adminAuth.login);
+router.get('/logout', adminAuth.logout);
+router.use(adminAuth.requireAdmin);
+
 router.get('/', adminController.index);
 
 // Product Management
 router.get('/products', productController.list);
 router.get('/products/add', productController.addForm);
 router.post('/products/add', productController.create);
+router.get('/products/edit/:id', productController.editForm);
+router.post('/products/edit/:id', productController.update);
+router.post('/products/delete/:id', productController.delete);
 router.get('/products/:productId/recipes', recipeController.adminList);
 router.post('/products/:productId/recipes', recipeController.adminCreate);
 router.post('/products/:productId/recipes/:recipeId/delete', recipeController.adminDelete);

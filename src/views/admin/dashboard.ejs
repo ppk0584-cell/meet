@@ -1,67 +1,95 @@
 <div class="dashboard-grid">
     <div class="card">
-        <div class="card-icon bg-blue">
-            <i class="fas fa-box"></i>
-        </div>
+        <div class="card-icon bg-blue"><i class="fas fa-box"></i></div>
         <div class="card-info">
-            <h3>전체 상품</h3>
-            <div class="value">124개</div>
+            <h3>판매 상품</h3>
+            <div class="value"><%= stats.products.toLocaleString() %>개</div>
         </div>
     </div>
     <div class="card">
-        <div class="card-icon bg-green">
-            <i class="fas fa-shopping-cart"></i>
-        </div>
+        <div class="card-icon bg-green"><i class="fas fa-shopping-cart"></i></div>
         <div class="card-info">
             <h3>금일 주문</h3>
-            <div class="value">18건</div>
+            <div class="value"><%= stats.todayOrders.toLocaleString() %>건</div>
         </div>
     </div>
     <div class="card">
-        <div class="card-icon bg-orange">
-            <i class="fas fa-users"></i>
-        </div>
+        <div class="card-icon bg-orange"><i class="fas fa-users"></i></div>
         <div class="card-info">
-            <h3>신규 회원</h3>
-            <div class="value">12명</div>
+            <h3>단골 회원</h3>
+            <div class="value"><%= stats.members.toLocaleString() %>명</div>
         </div>
     </div>
     <div class="card">
-        <div class="card-icon bg-red">
-            <i class="fas fa-won-sign"></i>
-        </div>
+        <div class="card-icon bg-red"><i class="fas fa-utensils"></i></div>
         <div class="card-info">
-            <h3>금일 매출</h3>
-            <div class="value">1,240,000원</div>
+            <h3>레시피 DB</h3>
+            <div class="value"><%= stats.recipes.toLocaleString() %>개</div>
         </div>
     </div>
 </div>
 
 <div class="dashboard-sections">
     <div class="section-card">
-        <h2>실시간 도축 현황 및 재고 알림</h2>
+        <div class="flex-between mb-20">
+            <h2>최근 상품 변경</h2>
+            <a href="/admin/products/add" class="btn btn-primary"><i class="fas fa-plus"></i> 상품 추가</a>
+        </div>
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>항목</th>
-                    <th>상태</th>
+                    <th>상품명</th>
+                    <th>카테고리</th>
                     <th>재고</th>
-                    <th>업데이트</th>
+                    <th>수정일</th>
                 </tr>
             </thead>
             <tbody>
+                <% if (recentProducts.length) { %>
+                    <% recentProducts.forEach(product => { %>
+                        <tr>
+                            <td><%= product.name %></td>
+                            <td><%= product.category || '-' %></td>
+                            <td><span class="status-badge <%= Number(product.stock_quantity || 0) > 0 ? 'stock' : 'out' %>"><%= product.stock_quantity || 0 %>kg</span></td>
+                            <td><%= product.updated_at ? new Date(product.updated_at).toLocaleString('ko-KR') : '-' %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="4" class="text-center">등록된 상품이 없습니다.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section-card">
+        <div class="flex-between mb-20">
+            <h2>최근 주문</h2>
+            <a href="/admin/orders" class="btn btn-secondary">주문 관리</a>
+        </div>
+        <table class="admin-table">
+            <thead>
                 <tr>
-                    <td>한우 채끝 (1++등급)</td>
-                    <td><span class="status-badge incoming">입고중</span></td>
-                    <td>15.2kg</td>
-                    <td>10분 전</td>
+                    <th>주문번호</th>
+                    <th>고객명</th>
+                    <th>금액</th>
+                    <th>상태</th>
+                    <th>접수일</th>
                 </tr>
-                <tr>
-                    <td>한우 등심 (1+등급)</td>
-                    <td><span class="status-badge stock">재고보유</span></td>
-                    <td>24.5kg</td>
-                    <td>1시간 전</td>
-                </tr>
+            </thead>
+            <tbody>
+                <% if (recentOrders.length) { %>
+                    <% recentOrders.forEach(order => { %>
+                        <tr>
+                            <td><%= order.order_number %></td>
+                            <td><%= order.customer_name %></td>
+                            <td><%= Number(order.total_amount || 0).toLocaleString() %>원</td>
+                            <td><span class="status-badge stock"><%= order.status || '접수' %></span></td>
+                            <td><%= order.created_at ? new Date(order.created_at).toLocaleString('ko-KR') : '-' %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" class="text-center">최근 주문이 없습니다.</td></tr>
+                <% } %>
             </tbody>
         </table>
     </div>

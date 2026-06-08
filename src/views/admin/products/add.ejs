@@ -1,47 +1,50 @@
 <div class="section-card">
-    <h2>신규 상품 등록</h2>
-    <form action="/admin/products/add" method="POST" class="admin-form">
+    <% const selected = (group, fallback = []) => product?.display_categories?.[group] || fallback; %>
+    <% const checked = (group, value, fallback = []) => selected(group, fallback).includes(value) ? 'checked' : ''; %>
+    <% const field = (name, fallback = '') => product?.[name] ?? fallback; %>
+    <% const dateValue = product?.slaughter_date ? new Date(product.slaughter_date).toISOString().slice(0, 10) : ''; %>
+    <h2><%= product ? '상품 수정' : '신규 상품 등록' %></h2>
+    <form action="<%= action %>" method="POST" class="admin-form">
         <div class="form-grid">
             <div class="form-group">
                 <label for="name">상품명</label>
-                <input type="text" id="name" name="name" required placeholder="예: 한우 채끝">
+                <input type="text" id="name" name="name" required placeholder="예: 한우 채끝" value="<%= field('name') %>">
             </div>
             <div class="form-group">
-                <label for="category">카테고리</label>
-                <select id="category" name="category">
-                    <option value="소고기">소고기</option>
-                    <option value="돼지고기">돼지고기</option>
-                    <option value="닭고기">닭고기</option>
-                    <option value="기타">기타</option>
-                </select>
+                <label>카테고리 <small>중복 선택 가능</small></label>
+                <div class="inline-check-grid">
+                    <% Object.entries(categoryGroups.meat_type).forEach(([value, label]) => { %>
+                        <label><input type="checkbox" name="meat_types" value="<%= value %>" <%= checked('meat_type', value, selected('meat_type', [])) %>> <%= label %></label>
+                    <% }) %>
+                </div>
             </div>
             <div class="form-group">
                 <label for="part">부위</label>
-                <input type="text" id="part" name="part" placeholder="예: 등심, 안심">
+                <input type="text" id="part" name="part" placeholder="예: 등심, 안심" value="<%= field('part') %>">
             </div>
             <div class="form-group">
                 <label for="grade">등급/판정</label>
-                <input type="text" id="grade" name="grade" placeholder="예: 1++, 1+">
+                <input type="text" id="grade" name="grade" placeholder="예: 1++, 1+" value="<%= field('grade') %>">
             </div>
             <div class="form-group">
                 <label for="price_per_100g">100g당 가격 (원)</label>
-                <input type="number" id="price_per_100g" name="price_per_100g" required>
+                <input type="number" id="price_per_100g" name="price_per_100g" required value="<%= field('price_per_100g', field('price_regular', 0)) %>">
             </div>
             <div class="form-group">
                 <label for="stock_quantity">현재 재고 (kg)</label>
-                <input type="number" step="0.01" id="stock_quantity" name="stock_quantity" required>
+                <input type="number" step="0.01" id="stock_quantity" name="stock_quantity" required value="<%= field('stock_quantity', 0) %>">
             </div>
             <div class="form-group">
                 <label for="slaughter_date">도축일</label>
-                <input type="date" id="slaughter_date" name="slaughter_date">
+                <input type="date" id="slaughter_date" name="slaughter_date" value="<%= dateValue %>">
             </div>
             <div class="form-group">
                 <label for="trace_number">축산물 이력번호</label>
-                <input type="text" id="trace_number" name="trace_number">
+                <input type="text" id="trace_number" name="trace_number" value="<%= field('trace_number') %>">
             </div>
             <div class="form-group">
                 <label for="image_url">상품 이미지 URL</label>
-                <input type="url" id="image_url" name="image_url" placeholder="https://...">
+                <input type="url" id="image_url" name="image_url" placeholder="https://..." value="<%= field('image_url') %>">
             </div>
         </div>
 
@@ -49,53 +52,46 @@
             <h3>매장 노출 메뉴</h3>
             <div class="check-grid">
                 <% Object.entries(categoryGroups.menu_section).forEach(([value, label]) => { %>
-                    <label><input type="checkbox" name="menu_sections" value="<%= value %>"> <%= label %></label>
+                    <label><input type="checkbox" name="menu_sections" value="<%= value %>" <%= checked('menu_section', value) %>> <%= label %></label>
                 <% }) %>
             </div>
 
             <h3>사장추천 / 특가 구분</h3>
             <div class="check-grid">
                 <% Object.entries(categoryGroups.boss_pick_type).forEach(([value, label]) => { %>
-                    <label><input type="radio" name="boss_pick_types" value="<%= value %>"> <%= label %></label>
-                <% }) %>
-            </div>
-
-            <h3>고기 종류</h3>
-            <div class="check-grid">
-                <% Object.entries(categoryGroups.meat_type).forEach(([value, label]) => { %>
-                    <label><input type="checkbox" name="meat_types" value="<%= value %>"> <%= label %></label>
+                    <label><input type="radio" name="boss_pick_types" value="<%= value %>" <%= checked('boss_pick_type', value) %>> <%= label %></label>
                 <% }) %>
             </div>
 
             <h3>상황별 추천 분류</h3>
             <div class="check-grid">
                 <% Object.entries(categoryGroups.situation).forEach(([value, label]) => { %>
-                    <label><input type="checkbox" name="situations" value="<%= value %>"> <%= label %></label>
+                    <label><input type="checkbox" name="situations" value="<%= value %>" <%= checked('situation', value) %>> <%= label %></label>
                 <% }) %>
             </div>
 
             <h3>요리용도 분류</h3>
             <div class="check-grid">
                 <% Object.entries(categoryGroups.cooking_use).forEach(([value, label]) => { %>
-                    <label><input type="checkbox" name="cooking_uses" value="<%= value %>"> <%= label %></label>
+                    <label><input type="checkbox" name="cooking_uses" value="<%= value %>" <%= checked('cooking_use', value) %>> <%= label %></label>
                 <% }) %>
             </div>
 
             <h3>가족식탁 분류</h3>
             <div class="check-grid">
                 <% Object.entries(categoryGroups.family_table).forEach(([value, label]) => { %>
-                    <label><input type="checkbox" name="family_tables" value="<%= value %>"> <%= label %></label>
+                    <label><input type="checkbox" name="family_tables" value="<%= value %>" <%= checked('family_table', value) %>> <%= label %></label>
                 <% }) %>
             </div>
         </div>
         
         <div class="form-group">
             <label for="description">상세 설명</label>
-            <textarea id="description" name="description" rows="4"></textarea>
+            <textarea id="description" name="description" rows="4"><%= field('description') %></textarea>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">등록하기</button>
+            <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
             <a href="/admin/products" class="btn btn-secondary">취소</a>
         </div>
     </form>
@@ -118,6 +114,21 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 8px 14px;
+}
+.inline-check-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(110px, 1fr));
+    gap: 8px;
+}
+.inline-check-grid label {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    min-height: 42px;
+    padding: 9px 10px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background: #fafafa;
 }
 .check-grid label {
     display: flex;

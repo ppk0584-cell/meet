@@ -20,6 +20,34 @@
     <%- include('partials/footer') %>
     <script>
         (() => {
+            let busy = false;
+            window.addEventListener('keydown', async event => {
+                if (!(event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'p') || busy) return;
+                event.preventDefault();
+                const password = window.prompt('관리자 비밀번호를 입력하세요.');
+                if (!password) return;
+                busy = true;
+                try {
+                    const response = await fetch('/admin/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password })
+                    });
+                    const data = await response.json();
+                    if (!response.ok || !data.ok) {
+                        window.alert(data.message || '관리자 인증에 실패했습니다.');
+                        return;
+                    }
+                    window.location.assign(data.redirect || '/admin');
+                } catch (error) {
+                    window.alert('관리자 인증 요청을 처리하지 못했습니다.');
+                } finally {
+                    busy = false;
+                }
+            });
+        })();
+
+        (() => {
             const cards = document.querySelectorAll('[data-spirit-card]');
             if (!cards.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             let timer;
