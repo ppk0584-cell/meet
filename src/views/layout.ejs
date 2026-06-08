@@ -22,7 +22,7 @@
         (() => {
             let busy = false;
             window.addEventListener('keydown', async event => {
-                if (!(event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'p') || busy) return;
+                if (!(event.ctrlKey && event.altKey && event.code === 'KeyM') || busy) return;
                 event.preventDefault();
                 const password = window.prompt('관리자 비밀번호를 입력하세요.');
                 if (!password) return;
